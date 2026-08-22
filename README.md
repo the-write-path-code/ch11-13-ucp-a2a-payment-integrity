@@ -298,7 +298,7 @@ uv run pytest tests/ -v --cov=app
 
 ## 📜 License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+See the [LICENSE](LICENSE) file for details.
 
 ## 🔗 References
 
