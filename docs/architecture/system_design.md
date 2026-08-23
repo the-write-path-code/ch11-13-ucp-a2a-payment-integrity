@@ -433,3 +433,15 @@ sequenceDiagram
 
     Note over Store,DB: Gap between validation and insert is the current commit boundary
 ```
+
+##13. Conflict recovery in complete_checkout()
+
+```mermaid
+
+flowchart TD
+    A["create_order_safe() raises StateConflictError"] --> B["complete_checkout() catches the exception"]
+    B --> C["get_checkout(checkout_id) re-reads the persisted row"]
+    C --> D["return the current Checkout to the caller"]
+    A -.-> E["no order inserted"]
+    D -.-> F["caller policy: retry from fresh state, escalate, or abandon"]
+```
