@@ -408,3 +408,28 @@ stateDiagram-v2
     end note
 
 ```
+
+##12. Persistence-boundary validation in the repository
+
+```mermaid
+sequenceDiagram
+    participant S as CheckoutService
+    participant Store as SQLiteStore
+    participant DB as SQLite DB
+
+    S->>Store: create_order_safe(checkout, expected_version)
+    Store->>DB: SELECT version, total_cents FROM checkouts WHERE checkout_id=?
+    DB-->>Store: real_version, real_total
+
+    alt real_version != expected_version or real_total != checkout.total_cents
+        Store-->>S: raise StateConflictError
+        Note over S,DB: No order insert. Stale write rejected.
+    else state matches
+        Note over Store,DB: Validation connection closes here
+        Store->>DB: INSERT INTO orders (order_id, checkout_id, total_cents, permalink_url)
+        DB-->>Store: commit
+        Store-->>S: return Order
+    end
+
+    Note over Store,DB: Gap between validation and insert is the current commit boundary
+```
