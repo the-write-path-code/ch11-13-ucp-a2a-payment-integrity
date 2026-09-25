@@ -136,6 +136,7 @@ sequenceDiagram
     W2-->>Client: Return Order 1001 (Idempotent Receipt)
 
     note over Client, DB: Outcome: Exactly-once commitment (1 order, 2 identical receipts)
+```
 
 ---
 
