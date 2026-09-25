@@ -388,8 +388,8 @@ stateDiagram-v2
 ```
 
 ##12. Persistence-boundary validation in the repository
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 sequenceDiagram
     participant S as CheckoutService
     participant Store as SQLiteStore
@@ -413,9 +413,8 @@ sequenceDiagram
 ```
 
 ##13. Conflict recovery in complete_checkout()
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 ```mermaid
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     A["create_order_safe() raises StateConflictError"] --> B["complete_checkout() catches the exception"]
     B --> C["get_checkout(checkout_id) re-reads the persisted row"]
