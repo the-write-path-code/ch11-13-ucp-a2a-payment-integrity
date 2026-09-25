@@ -10,6 +10,7 @@ Illustrates why in-memory locks fail and why we enforce safety at the Persistenc
 - **Red Dashed Arrows:** Rejection signals (Losers) due to Version Conflict or Unique Constraint.
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     Client["Client / Load Gen"]
     LB["Load Balancer / Port 8000"]
@@ -140,6 +141,7 @@ sequenceDiagram
 The decision tree for handling incoming requests safely.
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     Start([User Agent Sends 'Complete Checkout']) --> CheckIdem{"Check In-Memory<br/>Idempotency Key?"}
     
@@ -171,6 +173,7 @@ flowchart TD
 Formalizing the idempotent state transition: "Failure to Create" is a valid path to "Success".
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 stateDiagram
   direction TB
   state FetchExisting {
@@ -199,6 +202,7 @@ stateDiagram
 Shows the post-conflict path after a stale write is rejected: the payment attempt arrives with an expected checkout version, the persistence layer detects that storage has advanced, the write fails with a conflict, and the caller must refetch current state before retrying or asking for reconfirmation.
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 sequenceDiagram
     participant Agent as Agent / Client
     participant API as Checkout Service
@@ -232,7 +236,7 @@ sequenceDiagram
 Stable request identity distinguishes repeated delivery from new intent, a durable idempotency ledger records the winning business action, and the database uniqueness rule on orders(checkout_id) ensures that concurrent writers converge on one committed order.
 
 ```mermaid
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 sequenceDiagram
     participant C as Client or Agent
     participant W1 as Worker A
@@ -271,7 +275,7 @@ sequenceDiagram
 Early idempotency lookup and in-memory locking can intercept likely duplicates, but only the database unique constraint on orders(checkout_id) settles the race across workers. The winning request commits the order, and the losing request re-reads that canonical row and returns the same business result. 
 
 ```mermaid
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     A[Request arrives: complete_checkout] --> B[Fast path: idempotency lookup]
     B -->|Hit| C[Return recorded result]
@@ -296,7 +300,7 @@ flowchart TD
 Advisory replay checks may detect likely duplicates early, but the unique index on orders(checkout_id) is the shared enforcement point that allows one committed order row and forces the loser to reconcile by re-reading the canonical order.
 
 ```mermaid
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     A[Worker A receives complete_checkout] --> B[Carry request identity]
     C[Worker B receives retry for same checkout] --> D[Carry same request identity]
@@ -329,7 +333,7 @@ flowchart TD
 The model may select complete_checkout, and local replay checks may reduce duplicate work, but only the database commit boundary can decide whether a new order is created or a duplicate must reconcile to the canonical row.
 
 ```mermaid
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     A[User intent] --> B[LLM selects action: complete_checkout]
     B --> C[Service binds durable request identity]
@@ -353,7 +357,7 @@ flowchart TD
 A payment attempt begins from one persisted checkout version. If another actor mutates the checkout before commit, the version advances and the original payment attempt becomes stale. The order path must compare the caller's last-seen version with storage before creating the order.
 
 ```mermaid
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 stateDiagram-v2
     [*] --> Incomplete_v1: create_checkout()
 
@@ -384,7 +388,7 @@ stateDiagram-v2
 ```
 
 ##12. Persistence-boundary validation in the repository
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 ```mermaid
 sequenceDiagram
     participant S as CheckoutService
@@ -409,7 +413,7 @@ sequenceDiagram
 ```
 
 ##13. Conflict recovery in complete_checkout()
-
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 ```mermaid
 
 flowchart TD
