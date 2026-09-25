@@ -105,37 +105,32 @@ sequenceDiagram
 Shows how Versioning (OCC) detects dirty reads when an "Add Item" request interleaves with a "Payment" request.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px", "noteBkgColor": "#EBEBEB", "noteTextColor": "#000000", "noteBorderColor": "#999999"}}}%%
+%%{init: {'theme': 'neutral', 'themeVariables': {'fontFamily': 'Arial, Helvetica, sans-serif', 'fontSize': '11px', 'actorFontSize': '11px', 'noteFontSize': '10px', 'messageFontSize': '10px', 'noteBkgColor': '#EBEBEB', 'noteTextColor': '#000000', 'noteBorderColor': '#999999'}}}%%
 sequenceDiagram
     autonumber
-    actor Client as Client Agent
-    participant W1 as Worker 1
-    participant W2 as Worker 2
+    participant Buyer as Buyer Agent
+    participant Svc as Checkout Service
+    participant Actor as Concurrent Actor
     participant DB as SQLite DB
 
-    note over Client, DB: Scenario: Retry Storm (Duplicate Delivery of msg_101)
+    note over Buyer, DB: Scenario: Interleaving Cart Mutation During Payment
 
-    Client->>W1: 1. Initial Request (msg_101)
-    Client->>W2: 2. Retry after timeout (msg_101)
+    Buyer->>Svc: 1. Read Cart to start payment
+    Svc->>DB: SELECT cart (version 1, $100)
+    DB-->>Svc: Cart State (version 1, $100)
+    Svc-->>Buyer: Cart Snapshot (Expected version 1)
 
-    note over W1, DB: Workers 1 and 2 process checkout in parallel
+    note over Buyer, DB: Race Window: Background Mutation
+    Actor->>Svc: 2. Add emergency tubing (+$50)
+    Svc->>DB: UPDATE cart (version 2, $150)
+    DB-->>Svc: Commit OK (version 2)
 
-    W1->>DB: INSERT order (checkout_123)
-    W2->>DB: INSERT order (checkout_123)
+    note over Buyer, DB: Commit Gate: Validate Freshness
+    Buyer->>Svc: 3. Commit Order (Assert version 1, $100)
+    Svc->>DB: Validate: Stored v2 == Expected v1?
+    DB--xSvc: Conflict: Version Mismatch (2 != 1)
 
-    note over W2, DB: Constraint Gate: UNIQUE(checkout_id)
-
-    DB-->>W1: 201 Created (Order 1001)
-    DB--xW2: UNIQUE Constraint Failed
-
-    W1-->>Client: Return Order 1001 (New Order)
-
-    note over W2, DB: Catch DuplicateOrderError and fetch existing order
-    W2->>DB: SELECT order WHERE checkout_id=123
-    DB-->>W2: Return Order 1001
-    W2-->>Client: Return Order 1001 (Idempotent Receipt)
-
-    note over Client, DB: Outcome: Exactly-once commitment (1 order, 2 identical receipts)
+    note over Svc: Catch StateConflictError
 ```
 
 ---
