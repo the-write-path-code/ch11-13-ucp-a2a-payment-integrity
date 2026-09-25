@@ -65,59 +65,37 @@ flowchart TD
 Shows how the Database Unique Constraint acts as the "Atomic Guard" against duplicate payments (Double Spend).
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px", "noteBkgColor": "#EBEBEB", "noteTextColor": "#000000", "noteBorderColor": "#999999"}}}%%
 sequenceDiagram
-    participant Runner as Experiment Runner
-    participant Worker as Uvicorn Worker
-    participant DB as SQLite DB (Unique Index)
+    autonumber
+    actor Client as Client Agent
+    participant W1 as Worker 1
+    participant W2 as Worker 2
+    participant DB as SQLite DB
 
-    note over Runner, DB: Scenario: Retry Storm (N=3 Concurrent Requests)
+    note over Client, DB: Scenario: Retry Storm (Duplicate Delivery of msg_101)
 
-    Runner->>Worker: POST /pay (msgId=101)
-    Runner->>Worker: POST /pay (msgId=101)
-    Runner->>Worker: POST /pay (msgId=101)
+    Client->>W1: 1. Initial Request (msg_101)
+    Client->>W2: 2. Retry after timeout (msg_101)
 
-    rect rgb(255, 240, 240)
-        note right of Runner: Baseline Mode (Safety Off)
-        Worker->>DB: INSERT Order A (No Constraint)
-        Worker->>DB: INSERT Order B
-        Worker->>DB: INSERT Order C
-        DB-->>Worker: Success (3 Orders Created)
-        Worker-->>Runner: Return Order A
-        Worker-->>Runner: Return Order B
-        Worker-->>Runner: Return Order C
-    end
+    note over W1, DB: Workers 1 and 2 process checkout in parallel
 
-    rect rgb(240, 255, 240)
-        note right of Runner: Hardened Mode (DB Constraint)
-        
-        par Parallel Requests
-            Worker->>DB: INSERT Order A
-        and
-            Worker->>DB: INSERT Order A
-        and
-            Worker->>DB: INSERT Order A
-        end
+    W1->>DB: INSERT order (checkout_123)
+    W2->>DB: INSERT order (checkout_123)
 
-        Note over DB: Constraint Violation Check
-        
-        DB-->>Worker: Success (Request 1)
-        DB--xWorker: ERROR: Unique Constraint (Request 2)
-        DB--xWorker: ERROR: Unique Constraint (Request 3)
+    note over W2, DB: Constraint Gate: UNIQUE(checkout_id)
 
-        par Handling Results
-            Worker-->>Runner: Return Order A (Winner)
-        and
-            Note over Worker: Catch DuplicateOrderError
-            Worker->>DB: SELECT * FROM orders WHERE checkout_id=...
-            DB-->>Worker: Return Order A
-            Worker-->>Runner: Return Order A (Idempotent)
-        and
-            Note over Worker: Catch DuplicateOrderError
-            Worker->>DB: SELECT * FROM orders WHERE checkout_id=...
-            DB-->>Worker: Return Order A
-            Worker-->>Runner: Return Order A (Idempotent)
-        end
-    end
+    DB-->>W1: 201 Created (Order 1001)
+    DB--xW2: UNIQUE Constraint Failed
+
+    W1-->>Client: Return Order 1001 (New Order)
+
+    note over W2, DB: Catch DuplicateOrderError and fetch existing order
+    W2->>DB: SELECT order WHERE checkout_id=123
+    DB-->>W2: Return Order 1001
+    W2-->>Client: Return Order 1001 (Idempotent Receipt)
+
+    note over Client, DB: Outcome: Exactly-once commitment (1 order, 2 identical receipts)
 ```
 
 ---
@@ -127,36 +105,32 @@ sequenceDiagram
 Shows how Versioning (OCC) detects dirty reads when an "Add Item" request interleaves with a "Payment" request.
 
 ```mermaid
+%%{init: {'theme': 'neutral', 'themeVariables': {'fontFamily': 'Arial, Helvetica, sans-serif', 'fontSize': '11px', 'actorFontSize': '11px', 'noteFontSize': '10px', 'messageFontSize': '10px', 'noteBkgColor': '#EBEBEB', 'noteTextColor': '#000000', 'noteBorderColor': '#999999'}}}%%
 sequenceDiagram
-    participant User as User (Payment)
-    participant Hacker as Attacker (Add Item)
-    participant App as Checkout Service
+    autonumber
+    participant Buyer as Buyer Agent
+    participant Svc as Checkout Service
+    participant Actor as Concurrent Actor
     participant DB as SQLite DB
 
-    note over User, DB: Scenario: Mutation Race (Optimistic Concurrency)
+    note over Buyer, DB: Scenario: Interleaving Cart Mutation During Payment
 
-    User->>App: POST /pay (Total: $100)
-    App->>DB: READ Cart (Version: 1)
-    
-    note over App, Hacker: Race Window Starts
-    
-    Hacker->>App: POST /add-item (Price: $50)
-    App->>DB: UPDATE Cart (Total: $150, Version: 2)
-    DB-->>App: Success
-    
-    note over App, Hacker: Cart is now Version 2
-    
-    App->>DB: CREATE Order (Expect Version: 1)
-    
-    rect rgb(255, 230, 230)
-        note right of App: Validation Logic
-        DB->>DB: Check: Current Version (2) != Expected (1)
-    end
-    
-    DB--xApp: Error: StateConflict / Version Mismatch
-    App--xUser: 409 Conflict: Cart Modified, Please Retry
-    
-    note right of DB: Integrity Preserved:<br/>Payment Rejected due to<br/>stale view of cart.
+    Buyer->>Svc: 1. Read Cart to start payment
+    Svc->>DB: SELECT cart (version 1, $100)
+    DB-->>Svc: Cart State (version 1, $100)
+    Svc-->>Buyer: Cart Snapshot (Expected version 1)
+
+    note over Buyer, DB: Race Window: Background Mutation
+    Actor->>Svc: 2. Add emergency tubing (+$50)
+    Svc->>DB: UPDATE cart (version 2, $150)
+    DB-->>Svc: Commit OK (version 2)
+
+    note over Buyer, DB: Commit Gate: Validate Freshness
+    Buyer->>Svc: 3. Commit Order (Assert version 1, $100)
+    Svc->>DB: Validate: Stored v2 == Expected v1?
+    DB--xSvc: Conflict: Version Mismatch (2 != 1)
+
+    note over Svc: Catch StateConflictError
 ```
 
 ---
