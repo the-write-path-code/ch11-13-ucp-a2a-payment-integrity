@@ -5,9 +5,6 @@ This document visualizes the architectural patterns used to guarantee payment in
 ## 1. Deployment Topology (Multi-Worker)
 
 Illustrates why in-memory locks fail and why we enforce safety at the Persistence Layer.
-- **Blue Arrows:** Concurrent race attempts.
-- **Green Arrow:** The successful write (Winner).
-- **Red Dashed Arrows:** Rejection signals (Losers) due to Version Conflict or Unique Constraint.
 
 ```mermaid
 %%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
@@ -50,13 +47,6 @@ flowchart TD
     DB -. "IntegrityError<br/>(Duplicate)" .-> W3
     DB -. "IntegrityError<br/>(Duplicate)" .-> W4
     
-    %% Styling Classes
-    classDef worker fill:#fff,stroke:#333,stroke-width:1px;
-    class W1,W2,W3,W4 worker;
-    
-    linkStyle 5,6,7,8 stroke:#007bff,stroke-width:2px;
-    linkStyle 9 stroke:#28a745,stroke-width:3px;
-    linkStyle 10,11,12 stroke:#dc3545,stroke-width:2px,stroke-dasharray: 5 5;
 ```
 
 ---
