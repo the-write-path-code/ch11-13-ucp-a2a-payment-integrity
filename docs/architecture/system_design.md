@@ -7,46 +7,38 @@ This document visualizes the architectural patterns used to guarantee payment in
 Illustrates why in-memory locks fail and why we enforce safety at the Persistence Layer.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    Client["Client / Load Gen"]
-    LB["Load Balancer / Port 8000"]
+    LB["<div style='min-width: 320px;'><b>Client Ingress & Load Balancer (Port 8000)</b><br/>Distributes concurrent requests & retries across workers</div>"]
     
-    subgraph AppLayer ["Application Layer (Stateless Workers)"]
-        direction TB
-        style AppLayer fill:#e6f3ff,stroke:#3399ff,stroke-width:1px
-        W1["Uvicorn Worker 1"]
-        W2["Uvicorn Worker 2"]
-        W3["Uvicorn Worker 3"]
-        W4["Uvicorn Worker 4"]
+    subgraph Workers ["Application Layer: Stateless Workers (No Shared Memory)"]
+        direction LR
+        W1["<div style='min-width: 170px;'><b>Worker 1</b><br/>Stale Mutation</div>"]
+        W2["<div style='min-width: 170px;'><b>Worker 2</b><br/>Winning Mutation</div>"]
+        W3["<div style='min-width: 170px;'><b>Worker 3</b><br/>Initial Request</div>"]
+        W4["<div style='min-width: 170px;'><b>Worker 4</b><br/>Duplicate Retry</div>"]
     end
     
-    subgraph DataLayer ["Persistence Layer (Stateful Source of Truth)"]
-        style DataLayer fill:#e6fffa,stroke:#00cc99,stroke-width:1px
-        DB[("SQLite DB<br/>(UNIQUE Index)<br/>(Version Column)")]
-    end
-    
-    %% Infrastructure Flow (Neutral)
-    Client --> LB
     LB --> W1
     LB --> W2
     LB --> W3
     LB --> W4
     
-    %% Outbound Requests (Blue)
-    W1 -- "Insert (Ver=1)" --> DB
-    W2 -- "Update (Ver=2)" --> DB
-    W3 -- "Insert (Ver=1)" --> DB
-    W4 -- "Insert (Ver=1)" --> DB
+    DB[("<div style='min-width: 440px;'><b>Persistence Layer: SQLite Database (Source of Truth)</b><br/>• UNIQUE Index on checkout_id<br/>• Version Column for Optimistic Concurrency</div>")]
     
-    %% Return Signals - SUCCESS (Green)
-    DB -- "Success (Committed)" --> W2
-    
-    %% Return Signals - FAILURE (Red)
-    DB -. "StateConflict<br/>(Ver Mismatch)" .-> W1
-    DB -. "IntegrityError<br/>(Duplicate)" .-> W3
-    DB -. "IntegrityError<br/>(Duplicate)" .-> W4
-    
+    W1 -.->|"<b>StateConflict</b><br/>(Ver Mismatch)"| DB
+    W2 -->|"<b>Update (Ver=2)</b><br/>Commit OK"| DB
+    W3 -->|"<b>Insert (Ver=1)</b><br/>201 Created"| DB
+    W4 -.->|"<b>IntegrityError</b><br/>(Duplicate)"| DB
+
+    classDef client fill:#F3F4F6,stroke:#4B5563,color:#000000,stroke-width:1.5px
+    classDef worker fill:#EBF5FF,stroke:#2563EB,color:#000000,stroke-width:1.5px
+    classDef winner fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:1.5px
+    classDef db fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:1.5px
+
+    class LB client
+    class W1,W4 worker
+    class W2,W3 winner
+    class DB db
 ```
 
 ---
@@ -56,7 +48,6 @@ flowchart TD
 Shows how the Database Unique Constraint acts as the "Atomic Guard" against duplicate payments (Double Spend).
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px", "noteBkgColor": "#EBEBEB", "noteTextColor": "#000000", "noteBorderColor": "#999999"}}}%%
 sequenceDiagram
     autonumber
     actor Client as Client Agent
@@ -66,10 +57,10 @@ sequenceDiagram
 
     note over Client, DB: Scenario: Retry Storm (Duplicate Delivery of msg_101)
 
-    Client->>W1: 1. Initial Request (msg_101)
-    Client->>W2: 2. Retry after timeout (msg_101)
+    Client->>W1: Initial Request (msg_101)
+    Client->>W2: Retry after timeout (msg_101)
 
-    note over W1, DB: Workers 1 and 2 process checkout in parallel
+    note over W1, DB: Workers 1 and 2 process checkout concurrently
 
     W1->>DB: INSERT order (checkout_123)
     W2->>DB: INSERT order (checkout_123)
@@ -96,32 +87,32 @@ sequenceDiagram
 Shows how Versioning (OCC) detects dirty reads when an "Add Item" request interleaves with a "Payment" request.
 
 ```mermaid
-%%{init: {'theme': 'neutral', 'themeVariables': {'fontFamily': 'Arial, Helvetica, sans-serif', 'fontSize': '11px', 'actorFontSize': '11px', 'noteFontSize': '10px', 'messageFontSize': '10px', 'noteBkgColor': '#EBEBEB', 'noteTextColor': '#000000', 'noteBorderColor': '#999999'}}}%%
 sequenceDiagram
     autonumber
     participant Buyer as Buyer Agent
     participant Svc as Checkout Service
-    participant Actor as Concurrent Actor
+    participant Other as Concurrent Mutator
     participant DB as SQLite DB
 
     note over Buyer, DB: Scenario: Interleaving Cart Mutation During Payment
 
-    Buyer->>Svc: 1. Read Cart to start payment
-    Svc->>DB: SELECT cart (version 1, $100)
-    DB-->>Svc: Cart State (version 1, $100)
+    Buyer->>Svc: Read Cart to start payment
+    Svc->>DB: SELECT cart (version 1, USD 100)
+    DB-->>Svc: Cart State (version 1, USD 100)
     Svc-->>Buyer: Cart Snapshot (Expected version 1)
 
     note over Buyer, DB: Race Window: Background Mutation
-    Actor->>Svc: 2. Add emergency tubing (+$50)
-    Svc->>DB: UPDATE cart (version 2, $150)
+    Other->>Svc: Add emergency tubing (+50 USD)
+    Svc->>DB: UPDATE cart (version 2, USD 150)
     DB-->>Svc: Commit OK (version 2)
 
     note over Buyer, DB: Commit Gate: Validate Freshness
-    Buyer->>Svc: 3. Commit Order (Assert version 1, $100)
+    Buyer->>Svc: Commit Order (Assert version 1, USD 100)
     Svc->>DB: Validate: Stored v2 == Expected v1?
     DB--xSvc: Conflict: Version Mismatch (2 != 1)
 
-    note over Svc: Catch StateConflictError
+    note over Svc, DB: Catch StateConflictError (Stale read rejected)
+    Svc-->>Buyer: 409 Conflict (Cart Modified, Please Retry)
 ```
 
 ---
