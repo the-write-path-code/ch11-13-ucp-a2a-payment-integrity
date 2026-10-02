@@ -217,37 +217,36 @@ sequenceDiagram
 Stable request identity distinguishes repeated delivery from new intent, a durable idempotency ledger records the winning business action, and the database uniqueness rule on orders(checkout_id) ensures that concurrent writers converge on one committed order.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 sequenceDiagram
-    participant C as Client or Agent
+    autonumber
+    participant C as Client Agent
     participant W1 as Worker A
     participant W2 as Worker B
     participant L as Idempotency Ledger
-    participant DB as orders table UNIQUE(checkout_id)
+    participant DB as SQLite DB (UNIQUE)
 
-    C->>W1: complete_checkout(contextid, messageid, checkout_id)
-    W1->>L: lookup IdempotencyKey(contextid, messageid, complete_checkout)
-    L-->>W1: no committed result found
-    W1->>DB: INSERT order for checkout_id=123
+    C->>W1: complete_checkout(msg_101)
+    W1->>L: lookup IdempotencyKey
+    L-->>W1: no committed record
+    W1->>DB: INSERT order (checkout_123)
 
-    Note over C: acknowledgement is delayed or lost
+    note over C: acknowledgement delayed or lost
 
-    C->>W2: retry same complete_checkout(contextid, messageid, checkout_id)
-    W2->>L: lookup same idempotency key
+    C->>W2: retry checkout(msg_101)
+    W2->>L: lookup same key
     L-->>W2: race window still open
-    W2->>DB: INSERT order for checkout_id=123
+    W2->>DB: INSERT order (checkout_123)
 
     DB-->>W1: insert succeeds
-    W1->>L: record key -> committed order result
+    W1->>L: commit key -> Order 1001
 
-    DB-->>W2: unique constraint violation
-    W2->>DB: SELECT order by checkout_id=123
-    DB-->>W2: existing committed order
-    W2->>L: record or reconcile key -> same committed result
+    DB--xW2: UNIQUE constraint violation
+    W2->>DB: SELECT WHERE checkout_id=123
+    DB-->>W2: return Order 1001
+    W2->>L: reconcile key -> Order 1001
 
-    W1-->>C: completed order
-    W2-->>C: same completed order
-
+    W1-->>C: Order 1001 (Winner)
+    W2-->>C: Order 1001 (Idempotent Receipt)
 ```
 
 ---
@@ -256,23 +255,47 @@ sequenceDiagram
 Early idempotency lookup and in-memory locking can intercept likely duplicates, but only the database unique constraint on orders(checkout_id) settles the race across workers. The winning request commits the order, and the losing request re-reads that canonical row and returns the same business result. 
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    A[Request arrives: complete_checkout] --> B[Fast path: idempotency lookup]
-    B -->|Hit| C[Return recorded result]
-    B -->|Miss| D[Local coordination: InMemoryLockManager]
+    Req["<div style='min-width: 380px;'><b>Checkout Request & Idempotency Inspection</b><br/>POST complete_checkout(id) triggers in-memory key lookup</div>"]
 
-    D --> E[Slow path: attempt order insert]
-    E --> F[DB boundary: UNIQUE orders checkout_id]
+    Fast["<div style='min-width: 260px;'><b>Fast Path (Replay Cache Hit)</b><br/>Return recorded response immediately</div>"]
+    Slow["<div style='min-width: 280px;'><b>Slow Path (Atomic Coordination)</b><br/>Acquire advisory lock & attempt INSERT</div>"]
 
-    F -->|Winner| G[Insert succeeds]
-    G --> H[Store replay record]
-    H --> I[Return completed checkout]
+    Req -->|"Hit (Replay)"| Fast
+    Req -->|"Miss (New / Concurrent)"| Slow
 
-    F -->|Loser| J[DuplicateOrderError]
-    J --> K[get_order_by_checkout_id checkout_id]
-    K --> L[Return same committed order]
+    DB["<div style='min-width: 440px;'><b>Database Uniqueness Boundary: UNIQUE(checkout_id)</b><br/>Shared SQLite engine settles race across all concurrent workers</div>"]
+    Slow --> DB
 
+    subgraph WinnerPath ["Winning Execution Path"]
+        direction TB
+        W1["<div style='min-width: 240px;'><b>Insert Succeeded (Order Committed)</b><br/>Order row written & replay record cached</div>"]
+        W2["<div style='min-width: 240px;'><b>Return Completed Checkout</b><br/>201 Created response sent to caller</div>"]
+        W1 --> W2
+    end
+
+    subgraph LoserPath ["Concurrent Collision Path"]
+        direction TB
+        L1["<div style='min-width: 240px;'><b>DuplicateOrderError Caught</b><br/>UNIQUE constraint violation on checkout_id</div>"]
+        L2["<div style='min-width: 240px;'><b>Return Canonical Order</b><br/>SELECT by checkout_id -> 200 OK receipt</div>"]
+        L1 --> L2
+    end
+
+    DB -->|"Winner (First Commit)"| W1
+    DB -->|"Loser (Duplicate Insert)"| L1
+
+    classDef req fill:#F3F4F6,stroke:#4B5563,color:#000000,stroke-width:1.5px
+    classDef coord fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
+    classDef db fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:1.5px
+    classDef winner fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:1.5px
+    classDef loser fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:1.5px
+
+    class Req req
+    class Fast,W1,W2 winner
+    class Slow coord
+    class DB db
+    class L1 loser
+    class L2 coord
 ```
 
 ---
@@ -281,31 +304,43 @@ flowchart TD
 Advisory replay checks may detect likely duplicates early, but the unique index on orders(checkout_id) is the shared enforcement point that allows one committed order row and forces the loser to reconcile by re-reading the canonical order.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    A[Worker A receives complete_checkout] --> B[Carry request identity]
-    C[Worker B receives retry for same checkout] --> D[Carry same request identity]
+    subgraph Ingress ["Concurrent Worker Ingress (Stateless Tier)"]
+        direction LR
+        A["<div style='min-width: 320px;'><b>Worker A: Initial Request</b><br/>Binds request identity & attempts store insert</div>"]
+        B["<div style='min-width: 320px;'><b>Worker B: Concurrent Retry</b><br/>Same request identity & attempts store insert</div>"]
+    end
 
-    B --> E[Advisory replay lookup]
-    D --> F[Advisory replay lookup]
+    DB[("<div style='min-width: 580px;'><b>Database Uniqueness Boundary: UNIQUE(checkout_id)</b><br/>Shared SQLite engine settles concurrency race at transaction boundary</div>")]
 
-    E --> G[Store attempts INSERT into orders]
-    F --> H[Store attempts INSERT into orders]
+    A --> DB
+    B --> DB
 
-    G --> I[(UNIQUE index: orders.checkout_id)]
-    H --> I
+    subgraph Resolution ["Atomic Storage Resolution"]
+        direction LR
+        W["<div style='min-width: 320px;'><b>One Order Row Commits</b><br/>Winner writes canonical row into orders table</div>"]
+        L["<div style='min-width: 320px;'><b>DuplicateOrderError Caught</b><br/>IntegrityError caught; calls get_order_by_checkout_id</div>"]
+    end
 
-    I -->|winner| J[One order row commits]
-    I -->|loser| K[sqlite3.IntegrityError]
+    DB -->|"Winner (First Commit)"| W
+    DB -->|"Loser (Duplicate Insert)"| L
 
-    K --> L[Store raises DuplicateOrderError]
-    L --> M[Service calls get_order_by_checkout_id]
+    Final["<div style='min-width: 580px;'><b>Converged Result: Canonical Order Exists</b><br/>Repeated deliveries converge on exactly one durable business outcome</div>"]
 
-    J --> N[Canonical order exists]
-    M --> N
+    W --> Final
+    L --> Final
 
-    N --> O[Repeated delivery converges on one durable result]
+    classDef worker fill:#EBF5FF,stroke:#2563EB,color:#000000,stroke-width:1.5px
+    classDef db fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:1.5px
+    classDef win fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:1.5px
+    classDef lose fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:1.5px
+    classDef final fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
 
+    class A,B worker
+    class DB db
+    class W win
+    class L lose
+    class Final final
 ```
 
 ---
@@ -314,22 +349,50 @@ flowchart TD
 The model may select complete_checkout, and local replay checks may reduce duplicate work, but only the database commit boundary can decide whether a new order is created or a duplicate must reconcile to the canonical row.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    A[User intent] --> B[LLM selects action: complete_checkout]
-    B --> C[Service binds durable request identity]
-    C --> D[Replay lookup via idempotency layer<br/>advisory]
-    C --> E[InMemoryLockManager<br/>local advisory only]
-    D --> F[Store issues order insert]
-    E --> F
-    F --> G{Database commit boundary<br/>UNIQUE checkout_id}
-    G -->|Commit succeeds| H[New order committed]
-    G -->|Duplicate rejected| I[DuplicateOrderError]
-    I --> J[Service re-reads get_order_by_checkout_id]
-    H --> K[Return canonical durable result]
-    J --> K
-    K --> L[LLM may explain result after commit]
+    Ingress["<div style='min-width: 680px;'><b>1. Model Action Selection & Service Identity Binding</b><br/>User triggers intent & prompt -> LLM selects complete_checkout (advisory)<br/>Service seam binds durable request identity (context_id, message_id)</div>"]
 
+    AdvReplay["<div style='min-width: 320px;'><b>Replay Lookup (Advisory)</b><br/>Idempotency ledger early check for recorded result</div>"]
+    AdvLock["<div style='min-width: 320px;'><b>InMemoryLockManager (Advisory)</b><br/>Local worker process lock to reduce concurrency churn</div>"]
+
+    Ingress --> AdvReplay
+    Ingress --> AdvLock
+
+    StoreInsert["<div style='min-width: 680px;'><b>Store Issues Order INSERT</b><br/>Translates business action into database write request</div>"]
+
+    AdvReplay --> StoreInsert
+    AdvLock --> StoreInsert
+
+    DB[("<div style='min-width: 680px;'><b>2. Database Commit Boundary: orders table UNIQUE(checkout_id)</b><br/>Commit authority stays strictly below the model boundary in durable storage engine</div>")]
+
+    StoreInsert --> DB
+
+    Win["<div style='min-width: 320px;'><b>Commit Succeeds (Winner)</b><br/>First write succeeds; order row committed durably</div>"]
+    Lose["<div style='min-width: 320px;'><b>Duplicate Rejected (Loser)</b><br/>DuplicateOrderError caught; re-reads get_order_by_checkout_id</div>"]
+
+    DB -->|"Commit succeeds"| Win
+    DB -->|"Duplicate rejected"| Lose
+
+    Final["<div style='min-width: 680px;'><b>3. Return Canonical Durable Result & Post-Commit Explanation</b><br/>Both paths converge on exact same committed order; LLM explains result post-commit</div>"]
+
+    Win --> Final
+    Lose --> Final
+
+    classDef ingress fill:#F3F4F6,stroke:#4B5563,color:#000000,stroke-width:1.5px
+    classDef advisory fill:#FEF3C7,stroke:#D97706,color:#000000,stroke-width:1.5px
+    classDef store fill:#E0F2FE,stroke:#0284C7,color:#000000,stroke-width:1.5px
+    classDef db fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:2px
+    classDef win fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:1.5px
+    classDef lose fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:1.5px
+    classDef final fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
+
+    class Ingress ingress
+    class AdvReplay,AdvLock advisory
+    class StoreInsert store
+    class DB db
+    class Win win
+    class Lose lose
+    class Final final
 ```
 
 ---
