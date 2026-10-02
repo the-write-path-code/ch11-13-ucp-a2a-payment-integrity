@@ -401,46 +401,90 @@ flowchart TD
 A payment attempt begins from one persisted checkout version. If another actor mutates the checkout before commit, the version advances and the original payment attempt becomes stale. The order path must compare the caller's last-seen version with storage before creating the order.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
-stateDiagram-v2
-    [*] --> Incomplete_v1: create_checkout()
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "24px", "primaryColor": "#EBF5FF", "primaryBorderColor": "#2563EB", "primaryTextColor": "#000000", "lineColor": "#475569"}}}%%
+flowchart TD
+    Init(((" "))) --> V1["<div style='min-width: 440px;'><b>Incomplete (v1)</b>: create_checkout()</div>"]
+    V1 --> V2["<div style='min-width: 440px;'><b>Incomplete (v2)</b>: add_to_checkout(), save_checkout()</div>"]
+    V2 --> V3["<div style='min-width: 440px;'><b>Ready (v3)</b>: start_payment(), save_checkout()<br/><i>Payment attempt begins against captured version 3</i></div>"]
 
-    Incomplete_v1 --> Incomplete_v2: add_to_checkout(), save_checkout()
-    Incomplete_v2 --> Ready_v3: start_payment(), save_checkout()
+    V3 -->|"Background cart edit"| Mutated["<div style='min-width: 250px;'><b>Mutated State (v4)</b><br/>Concurrent cart edit advances stored version to 4</div>"]
+    V3 -->|"Buyer agent commits"| CommitCheck{"<div style='min-width: 250px;'><b>Commit Check</b><br/>complete_checkout()<br/>asserts expected_version=3</div>"}
 
-    Ready_v3 --> Mutated_v4: concurrent cart change, save_checkout(), version = 4
-    Ready_v3 --> CommitCheck: complete_checkout(), expected_version = 3
+    CommitCheck -->|"Stored v == 3 (Fresh)"| Completed["<div style='min-width: 250px;'><b>Completed (v4)</b><br/>Version matches; order created<br/>and saved durably</div>"]
+    CommitCheck -->|"Stored v != 3 (Stale)"| Conflict["<div style='min-width: 250px;'><b>StateConflictError</b><br/>Version mismatch rejected;<br/>must refresh state</div>"]
 
-    CommitCheck --> Completed_v4: stored version = 3, order created, save_checkout()
-    CommitCheck --> Conflict: stored version != 3, raise StateConflictError
+    Mutated -.->|"Causes version mismatch (4 != 3)"| Conflict
 
-    note right of Ready_v3
-      Payment starts from a specific
-      persisted checkout version.
-    end note
+    classDef state fill:#EBF5FF,stroke:#2563EB,color:#000000,stroke-width:1.5px
+    classDef check fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:1.5px
+    classDef success fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:1.5px
+    classDef conflict fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:1.5px
+    classDef init fill:#1E293B,stroke:#0F172A,color:#FFFFFF
 
-    note right of Mutated_v4
-      Another actor changes the checkout
-      before payment commits.
-    end note
-
-    note right of Conflict
-      The original write is stale and must
-      refresh state before any next step.
-    end note
-
+    class Init init
+    class V1,V2,V3,Mutated state
+    class CommitCheck check
+    class Completed success
+    class Conflict conflict
 ```
 
-##12. Persistence-boundary validation in the repository
+## 12. OCC validation gate at the persistence boundary.
+When complete_checkout() submits an order creation request, the store atomically compares stored version and total_cents against expected state before allowing an order row to commit.
+
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "24px", "primaryColor": "#F8FAFC", "primaryBorderColor": "#0284C7", "primaryTextColor": "#000000", "lineColor": "#475569"}}}%%
+flowchart TD
+    A["<div style='min-width: 600px;'><b>1. Service Read & Expected Version Capture</b><br/>complete_checkout() reads checkout state & captures expected_version</div>"]
+
+    B["<div style='min-width: 600px;'><b>2. Persistence Gate Ingress: create_order_safe()</b><br/>SELECT version, total_cents FROM checkouts WHERE checkout_id=?</div>"]
+    A --> B
+
+    Gate[("<div style='min-width: 600px;'><b>3. OCC Persistence Validation Gate</b><br/>Atomically inspects database row against caller's expected state</div>")]
+    B --> Gate
+
+    subgraph Outcomes ["Validation Outcomes (Enforced at Storage Boundary)"]
+        direction LR
+        Missing["<div style='min-width: 210px;'><b>Row Missing</b><br/>Checkout not in DB<br/><b>raise ValueError</b></div>"]
+        Conflict["<div style='min-width: 240px;'><b>OCC Conflict (Stale Write)</b><br/>stored_version != expected<br/>OR stored_total != total_cents<br/><b>raise StateConflictError</b></div>"]
+        Success["<div style='min-width: 210px;'><b>OCC Validation Passed</b><br/>Version & total match<br/><b>proceed to create_order()</b></div>"]
+    end
+
+    Gate -->|"Row is None"| Missing
+    Gate -->|"Version / Total mismatch"| Conflict
+    Gate -->|"Predicates match"| Success
+
+    Final["<div style='min-width: 600px;'><b>4. Storage Boundary Protection</b><br/>No order row is inserted on conflict; stale Checkout object is never written back</div>"]
+
+    Missing --> Final
+    Conflict --> Final
+    Success --> Final
+
+    classDef service fill:#E0F2FE,stroke:#0284C7,color:#000000,stroke-width:1.5px
+    classDef gate fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:2px
+    classDef error fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:1.5px
+    classDef success fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:1.5px
+    classDef final fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
+
+    class A,B service
+    class Gate gate
+    class Missing,Conflict error
+    class Success success
+    class Final final
+```
+
+## 13. Persistence-boundary validation in the repository.
+Sequence diagram of create_order_safe() showing atomic inspection of checkout version and total amount, rejection of stale writes via StateConflictError, and subsequent order insertion on valid match.
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "28px", "actorFontSize": "32px", "noteFontSize": "26px", "messageFontSize": "28px", "primaryTextColor": "#000000", "lineColor": "#4B5563", "actorBkg": "#EBF5FF", "actorBorder": "#2563EB", "actorTextColor": "#000000", "noteBkgColor": "#FEF9C3", "noteBorderColor": "#CA8A04", "noteTextColor": "#000000", "signalColor": "#1E293B", "signalTextColor": "#0F172A", "sequenceNumberColor": "#FFFFFF"}}}%%
 sequenceDiagram
+    autonumber
     participant S as CheckoutService
     participant Store as SQLiteStore
     participant DB as SQLite DB
 
     S->>Store: create_order_safe(checkout, expected_version)
-    Store->>DB: SELECT version, total_cents FROM checkouts WHERE checkout_id=?
+    Store->>DB: SELECT version, total_cents FROM checkouts
     DB-->>Store: real_version, real_total
 
     alt real_version != expected_version or real_total != checkout.total_cents
@@ -448,21 +492,44 @@ sequenceDiagram
         Note over S,DB: No order insert. Stale write rejected.
     else state matches
         Note over Store,DB: Validation connection closes here
-        Store->>DB: INSERT INTO orders (order_id, checkout_id, total_cents, permalink_url)
-        DB-->>Store: commit
+        Store->>DB: INSERT INTO orders (order_id, checkout_id, total)
+        DB-->>Store: commit OK
         Store-->>S: return Order
     end
 
-    Note over Store,DB: Gap between validation and insert is the current commit boundary
+    Note over Store,DB: Concurrency gap between validation and insert
 ```
 
-##13. Conflict recovery in complete_checkout()
+## 14. Conflict recovery in complete_checkout().
+Catching StateConflictError preserves storage integrity by refusing stale mutations. The service refreshes state from the persistence layer and leaves retry decisions to explicit caller policy.
+
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "18px", "primaryColor": "#F8FAFC", "primaryBorderColor": "#0284C7", "primaryTextColor": "#000000", "lineColor": "#475569"}}}%%
 flowchart TD
-    A["create_order_safe() raises StateConflictError"] --> B["complete_checkout() catches the exception"]
-    B --> C["get_checkout(checkout_id) re-reads the persisted row"]
-    C --> D["return the current Checkout to the caller"]
-    A -.-> E["no order inserted"]
-    D -.-> F["caller policy: retry from fresh state, escalate, or abandon"]
+    subgraph Flow ["Conflict Recovery Pipeline in complete_checkout()"]
+        A["<div style='min-width: 340px;'><b>1. OCC Mutation Conflict Raised</b><br/>create_order_safe() raises StateConflictError</div>"]
+        B["<div style='min-width: 340px;'><b>2. Exception Interception</b><br/>complete_checkout() catches exception</div>"]
+        C["<div style='min-width: 340px;'><b>3. Source-of-Truth Refresh</b><br/>get_checkout(id) re-reads persisted row</div>"]
+        D["<div style='min-width: 340px;'><b>4. Return Fresh State to Caller</b><br/>Returns current Checkout (updated v & total)</div>"]
+
+        A --> B
+        B --> C
+        C --> D
+    end
+
+    Safe["<div style='min-width: 240px;'><b>Invariant Preserved</b><br/>&bull; No order row inserted<br/>&bull; Stale state never committed</div>"]
+    Policy["<div style='min-width: 240px;'><b>Caller-Side Policy</b><br/>&bull; Retry from fresh version<br/>&bull; Reconfirm price change<br/>&bull; Or abandon workflow</div>"]
+
+    A -.-> Safe
+    D -.-> Policy
+
+    classDef reject fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:1.5px
+    classDef service fill:#E0F2FE,stroke:#0284C7,color:#000000,stroke-width:1.5px
+    classDef safe fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:1.5px
+    classDef policy fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
+
+    class A reject
+    class B,C,D service
+    class Safe safe
+    class Policy policy
 ```
