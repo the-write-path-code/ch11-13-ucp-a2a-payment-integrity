@@ -211,3 +211,5 @@ test.db
 *.db
 file:memdb*
 paper_results.csv
+_artwork_tools/
+_artwork_build/
