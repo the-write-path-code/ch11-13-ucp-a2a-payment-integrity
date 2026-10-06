@@ -6,6 +6,8 @@ This repository demonstrates what changes when an agent can initiate a write rat
 
 The implementation puts the final duplicate-order barrier at the persistence layer. A model may select `complete_checkout`. It does not commit the order. The service establishes request identity, and the database decides whether an order row may exist.
 
+For interactive visual walkthroughs of multi-worker deployment topology, retry storms, idempotent order settlement, mutation races, fast-path versus slow-path boundaries, and optimistic concurrency control (OCC), see the [interactive architecture and workflow diagrams](#architecture-and-workflow-diagrams).
+
 ## What You Will Run
 
 | Chapter | Demonstration | What it shows |
@@ -241,22 +243,32 @@ Run tests before changing idempotency keys, order uniqueness rules, version hand
 ├── scripts/
 │   └── generate_plots.py              # Experiment figure generation
 ├── docs/
-│   ├── architecture_system_design.md   # Chapter diagrams and design walkthrough
+│   ├── architecture/                  # Architectural specifications and manuscript figures
+│   │   ├── Figure 13-2.md
+│   │   └── system_design.md
 │   └── plots/                         # Generated figures
+├── workflow/
+│   ├── 01_multi_worker_deployment_topology.html  # Interactive deployment topology & persistence boundary
+│   ├── 02_retry_storm_idempotency.html           # Interactive retry storm sequence & atomic unique guard
+│   ├── 03_mutation_race_occ.html                 # Interactive mutation race & OCC freshness validation
+│   ├── 04_payment_integrity_guard.html           # Interactive fast path vs atomic slow path decision tree
+│   ├── 05_occ_persistence_validation_gate.html   # Interactive Figure 13.2 OCC persistence validation gate
+│   ├── 06_conflict_recovery_workflow.html        # Interactive conflict recovery in complete_checkout()
+│   ├── Figure 13-2.md                            # Manuscript figure source reference
+│   └── system_design.md                          # Comprehensive architectural specification
 └── tests/
 ```
 
-## Architecture Diagrams and Supporting Documents
+## Architecture and Workflow Diagrams
 
-`docs/architecture_system_design.md` contains the diagrams used in Chapters 11 through 13:
+Interactive Archify workflow diagrams illustrate multi-worker deployment topology, retry-storm handling, optimistic concurrency control (OCC), fast-path versus atomic slow-path decision trees, persistence validation gates, and conflict recovery workflows. The companion architectural specifications and manuscript figures are preserved in `workflow/` (`system_design.md` and `Figure 13-2.md`).
 
-- Multi-worker deployment topology and the persistence boundary.
-- Retry-storm sequence and database uniqueness enforcement.
-- Mutation race and version-based stale-write rejection.
-- Idempotency fast path and atomic slow path.
-- Checkout lifecycle and expected-version checks.
-- Loser reconciliation after duplicate-order detection.
-- Current limitations in the validation-read and order-insert boundary.
+- [01: Multi-Worker Deployment Topology](https://the-write-path-code.github.io/ch11-13-ucp-a2a-payment-integrity/workflow/01_multi_worker_deployment_topology.html) — Illustrates why process-local in-memory locks fail across independent worker processes and how the shared SQLite persistence layer enforces payment safety via `UNIQUE(checkout_id)` and OCC version columns.
+- [02: Retry Storm Sequence and Atomic Uniqueness Barrier](https://the-write-path-code.github.io/ch11-13-ucp-a2a-payment-integrity/workflow/02_retry_storm_idempotency.html) — Traces concurrent duplicate delivery across workers, showing how the database unique constraint acts as the atomic guard and losing workers reconcile to the canonical committed order.
+- [03: Mutation Race and OCC Freshness Validation](https://the-write-path-code.github.io/ch11-13-ucp-a2a-payment-integrity/workflow/03_mutation_race_occ.html) — Demonstrates dirty read detection when background cart edits interleave with checkout payment, rejecting stale writes with `StateConflictError`.
+- [04: Payment Integrity Guard: Fast Path vs. Atomic Slow Path](https://the-write-path-code.github.io/ch11-13-ucp-a2a-payment-integrity/workflow/04_payment_integrity_guard.html) — Details the decision tree between advisory in-memory cache hits (fast path) and shared database uniqueness settlement (atomic slow path).
+- [05: OCC Persistence Validation Gate (Figure 13.2)](https://the-write-path-code.github.io/ch11-13-ucp-a2a-payment-integrity/workflow/05_occ_persistence_validation_gate.html) — Formalizes the storage boundary gate in `create_order_safe()`, verifying row presence, version, and total amount before committing orders.
+- [06: Conflict Recovery Workflow in complete_checkout()](https://the-write-path-code.github.io/ch11-13-ucp-a2a-payment-integrity/workflow/06_conflict_recovery_workflow.html) — Shows exception interception, source-of-truth state refresh, storage invariant preservation, and caller-side policy reconfirmation.
 
 Read the persistence-boundary validation diagram before modifying OCC. The current implementation re-reads the checkout version before order creation, but its validation read and later insert do not yet use one shared transaction. The diagram labels that gap so it remains visible.
 
