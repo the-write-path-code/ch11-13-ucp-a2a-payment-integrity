@@ -4980,17 +4980,17 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>Payment Integrity Guard: Fast Path vs. Atomic Slow Path</h1>
       </div>
-      <p class="subtitle">In-Memory Replay Cache Hit vs Database Uniqueness Settlement</p>
+      <p class="subtitle">In-Memory Replay Cache Hit vs Database Uniqueness &amp; OCC Settlement</p>
     </div>
 
-    <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity","revision":"075b1c26d1202fa4aef2ff2a57aac97c18964e28","shortRevision":"075b1c2","label":"the-write-path-code/ch11-13-ucp-a2a-payment-integrity","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/tree/075b1c26d1202fa4aef2ff2a57aac97c18964e28"},"referenceCount":10,"nodes":{"req_ingress":[{"path":"app/services/checkout_service.py","line":86,"endLine":94,"label":"complete_checkout()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/services/checkout_service.py#L86-L94"}],"idem_check":[{"path":"app/services/checkout_service.py","line":107,"endLine":110,"label":"idempotency key","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/services/checkout_service.py#L107-L110"}],"fast_replay":[{"path":"app/infra/idempotency.py","line":16,"endLine":23,"label":"InMemoryIdempotencyStore","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/infra/idempotency.py#L16-L23"}],"slow_lock":[{"path":"app/infra/lock_manager.py","line":10,"endLine":25,"label":"InMemoryLockManager","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/infra/lock_manager.py#L10-L25"}],"cached_receipt":[{"path":"app/services/checkout_service.py","line":108,"endLine":110,"label":"return cached","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/services/checkout_service.py#L108-L110"}],"db_boundary":[{"path":"app/infra/store.py","line":220,"endLine":228,"label":"UNIQUE constraint","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/infra/store.py#L220-L228"}],"duplicate_caught":[{"path":"app/domain/errors.py","line":4,"endLine":13,"label":"DuplicateOrderError","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/domain/errors.py#L4-L13"}],"commit_winner":[{"path":"app/domain/models.py","line":33,"endLine":37,"label":"Order model","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/domain/models.py#L33-L37"}],"reconciled_res":[{"path":"app/services/checkout_service.py","line":133,"endLine":141,"label":"loser reconciliation","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/services/checkout_service.py#L133-L141"}],"canonical_res":[{"path":"app/services/checkout_service.py","line":143,"endLine":150,"label":"save_checkout","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/075b1c26d1202fa4aef2ff2a57aac97c18964e28/app/services/checkout_service.py#L143-L150"}]}}</script>
+    <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity","revision":"54ba6c742070d2dc742a973fb86c73bb9c2a635f","shortRevision":"54ba6c7","label":"the-write-path-code/ch11-13-ucp-a2a-payment-integrity","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/tree/54ba6c742070d2dc742a973fb86c73bb9c2a635f"},"referenceCount":10,"nodes":{"start_req":[{"path":"app/services/checkout_service.py","line":86,"endLine":94,"label":"complete_checkout()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L86-L94"}],"check_idem":[{"path":"app/infra/idempotency.py","line":28,"endLine":42,"label":"IdempotencyStore","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/idempotency.py#L28-L42"}],"return_cached":[{"path":"app/services/checkout_service.py","line":96,"endLine":105,"label":"replay cached order","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L96-L105"}],"attempt_insert":[{"path":"app/infra/store.py","line":218,"endLine":224,"label":"INSERT INTO orders","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L218-L224"}],"db_result":[{"path":"app/infra/store.py","line":230,"endLine":258,"label":"create_order_safe()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L230-L258"}],"win_commit":[{"path":"app/domain/models.py","line":33,"endLine":37,"label":"Order","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/domain/models.py#L33-L37"}],"occ_conflict":[{"path":"app/domain/errors.py","line":16,"endLine":30,"label":"StateConflictError","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/domain/errors.py#L16-L30"}],"loser_catch":[{"path":"app/domain/errors.py","line":4,"endLine":13,"label":"DuplicateOrderError","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/domain/errors.py#L4-L13"}],"fetch_canonical":[{"path":"app/infra/store.py","line":259,"endLine":270,"label":"get_order_by_checkout_id()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L259-L270"}],"return_success":[{"path":"app/services/checkout_service.py","line":133,"endLine":141,"label":"return response","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L133-L141"}]}}</script>
     <script id="archify-i18n-data" type="application/json">{"locale":"en","messages":{"viewer.kind.frontend":"Frontend","viewer.kind.backend":"Backend","viewer.kind.database":"Database","viewer.kind.cloud":"Cloud","viewer.kind.security":"Security","viewer.kind.messagebus":"Message bus","viewer.kind.external":"External","viewer.kind.neutral":"Neutral","viewer.kind.node":"Node","viewer.kind.start":"Start","viewer.kind.active":"Active","viewer.kind.waiting":"Waiting","viewer.kind.decision":"Decision","viewer.kind.success":"Success","viewer.kind.failure":"Failure","viewer.toolbar.actions":"Diagram actions","viewer.theme.toggle.title":"Toggle theme (T)","viewer.theme.toggle":"Toggle color theme","viewer.theme.dark":"Dark","viewer.theme.light":"Light","viewer.preset.choose.title":"Choose visual style (S cycles)","viewer.preset.choose":"Choose visual style","viewer.preset.style":"Style","viewer.preset.menu":"Visual style","viewer.preset.identity":"Visual identity","viewer.preset.cycles":"to cycle","viewer.preset.classic":"Classic","viewer.preset.classic.short":"Classic","viewer.preset.classic.hint":"Stable technical default","viewer.preset.flow":"Signal Flow","viewer.preset.flow.short":"Flow","viewer.preset.flow.hint":"Motion-forward presentation","viewer.preset.blueprint":"Blueprint","viewer.preset.blueprint.hint":"Engineering review","viewer.preset.editorial":"Editorial","viewer.preset.editorial.hint":"Publication and launch notes","viewer.preset.badge.signalFlow":"SIGNAL FLOW","viewer.preset.badge.blueprint":"BLUEPRINT / REV 01","viewer.preset.badge.editorial":"EDITORIAL / FIELD NOTE","viewer.preset.badge.editorialPlate":"ARCHIFY / PLATE 04","viewer.preset.current":"Visual style: {style}. Choose visual style","viewer.motion.live":"Live","viewer.motion.still":"Still","viewer.motion.pause":"Pause motion","viewer.motion.resume":"Resume motion","viewer.motion.reduced":"Motion paused by reduced-motion preference","viewer.motion.hidden":"Motion paused while this page is hidden","viewer.motion.yielding":"Pause motion; currently yielding to {owner}","viewer.motion.yielding.title":"Live preview enabled · yielding to {owner}","viewer.owner.route":"Route Probe","viewer.owner.lens":"Semantic Lens","viewer.owner.relationship":"Relationship Preview","viewer.owner.intent":"Intent Trace","viewer.owner.focus":"semantic focus","viewer.owner.legend":"legend preview","viewer.owner.reader":"reader interaction","viewer.present.enter":"Enter presentation stage","viewer.present.enter.title":"Presentation stage (F)","viewer.present.exit":"Exit presentation stage","viewer.present.exit.title":"Exit presentation stage (F or Escape)","viewer.present.present":"Present","viewer.present.exit.label":"Exit","viewer.export.button":"Export","viewer.export.button.title":"Export diagram (E)","viewer.export.diagram":"Export diagram","viewer.export.menu":"Export","viewer.export.subtitle":"Portable, clean outputs","viewer.export.share":"Share","viewer.export.shareCard":"Share Card","viewer.export.routeShareCard":"Route Share Card","viewer.export.reachShareCard":"Reach Share Card","viewer.export.copyDiagram":"Copy diagram","viewer.export.clipboardPng":"PNG to clipboard","viewer.export.raster":"Raster images","viewer.export.image":"Image","viewer.export.lossless":"Lossless image","viewer.export.compact":"Compact image","viewer.export.modern":"Modern image","viewer.export.vectorMotion":"Vector and motion","viewer.export.vectorMotion.heading":"Vector \u0026 motion","viewer.export.editable":"Editable vector","viewer.export.svg.auto":"SVG · Auto","viewer.export.svg.auto.hint":"Matches host theme","viewer.export.svg.light":"SVG · Light","viewer.export.svg.light.hint":"Always light","viewer.export.svg.dark":"SVG · Dark","viewer.export.svg.dark.hint":"Always dark","viewer.export.motion6s":"6s motion","viewer.export.unsupported":"Not supported by this browser","viewer.export.clipboardUnsupported":"Clipboard image write not supported by this browser","viewer.export.clipboardUnsupported.short":"Clipboard image write not supported in this browser.","viewer.export.motionUnavailable":"Motion capture unavailable in this browser","viewer.export.webmUnavailable":"WebM unavailable in this browser","viewer.export.failed":"Export failed: {message}","viewer.export.unknownVariant":"Unknown Share Card variant: {variant}","viewer.export.routeRequired":"Trace a route before exporting a Route Share Card","viewer.export.reachRequired":"Trace authored reach before exporting a Reach Share Card","viewer.export.unknown":"unknown","viewer.export.routeFailed":"Route Share Card export failed: {message}","viewer.export.reachFailed":"Reach Share Card export failed: {message}","viewer.export.copyFailed":"Copy failed: {message}","viewer.export.copiedPng":"Copied PNG to clipboard","viewer.export.downloadedRoute":"Downloaded Route Share Card","viewer.export.downloadedReach":"Downloaded Reach Share Card","viewer.export.downloadedWebm":"Downloaded WebM","viewer.export.recording":"Recording 6 seconds of motion…","viewer.export.card.routeSummary.one":"Path: {source} → {target} · {count} step","viewer.export.card.routeSummary.other":"Path: {source} → {target} · {count} steps","viewer.export.card.reachSummary":"Authored {direction} from {origin} · {nodes} · {links} · max {hops}","viewer.export.card.node.one":"{count} node","viewer.export.card.node.other":"{count} nodes","viewer.export.card.link.one":"{count} link","viewer.export.card.link.other":"{count} links","viewer.export.card.hop.one":"{count} hop","viewer.export.card.hop.other":"{count} hops","viewer.export.card.routeBadge":"ARCHIFY · ROUTE · {hops}","viewer.export.card.reachBadge":"ARCHIFY · {direction} REACH","viewer.export.direction.upstream":"Upstream","viewer.export.direction.downstream":"Downstream","viewer.export.error.canvasUnavailable":"Canvas unavailable for {label}","viewer.export.error.contextUnavailable":"2D canvas context unavailable for {label}","viewer.export.error.toBlobUnavailable":"canvas.toBlob unavailable for {label}","viewer.export.error.toBlobNull":"canvas.toBlob returned no data for {label}","viewer.export.error.variantsCombined":"Share Card variants cannot be combined","viewer.export.error.viewerState":"Share Card export could not remove temporary viewer state","viewer.export.error.routeState":"Route Card export could not preserve the resolved route safely","viewer.export.error.reachState":"Reach Card export could not preserve authored reach safely","viewer.export.error.webmRequirements":"WebM motion export requires a trace animation and browser MediaRecorder support","viewer.export.error.mediaRecorder":"MediaRecorder failed","viewer.export.error.emptyWebm":"MediaRecorder produced an empty WebM","viewer.export.error.webmBackground":"SVG background could not be loaded for WebM export","viewer.guide.title":"Explore this system","viewer.focus.selectedNodes":"{count} selected nodes","viewer.guide.eyebrow":"Diagram guide","viewer.guide.close":"Close diagram guide","viewer.guide.inspecting":"Inspecting compiled semantics","viewer.guide.actions":"Diagram exploration actions","viewer.guide.find":"Find any node","viewer.guide.find.hint":"Search labels, responsibilities, kinds, and stable IDs.","viewer.guide.route":"Trace a route","viewer.guide.route.aria":"Trace a directed route","viewer.guide.route.hint":"Ask how two semantic nodes connect in authored direction.","viewer.guide.map":"See the whole system","viewer.guide.map.hint":"Open Semantic Radar with a live viewport and stable nodes.","viewer.guide.lens":"Compare semantic kinds","viewer.guide.lens.hint":"Count roles, reveal their traffic, and compare direct authored links.","viewer.guide.present":"Enter Presentation Stage","viewer.guide.present.hint":"Give the live diagram the viewport without changing export.","viewer.guide.shortcuts":"Additional keyboard shortcuts","viewer.guide.shortcut.export":"Export","viewer.guide.shortcut.theme":"Theme","viewer.guide.shortcut.style":"Style","viewer.guide.shortcut.reset":"Reset","viewer.guide.shortcut.zoomIn":"Zoom in","viewer.guide.shortcut.zoomOut":"Zoom out","viewer.guide.shortcut.close":"Close","viewer.guide.facts":"{nodes} · {relationships}","viewer.guide.fact.node.one":"{count} semantic node","viewer.guide.fact.node.other":"{count} semantic nodes","viewer.guide.fact.relationship.one":"{count} relationship","viewer.guide.fact.relationship.other":"{count} relationships","viewer.guide.open":"Open diagram guide","viewer.finder.title":"Find a node","viewer.finder.close":"Close node finder","viewer.finder.placeholder":"Search labels or IDs","viewer.finder.search":"Search diagram nodes","viewer.finder.results":"Diagram nodes","viewer.finder.empty":"No matching nodes","viewer.finder.result.focus":"Focus {label}","viewer.finder.result.routeStart":"Choose {label} as route start","viewer.finder.result.routeTarget":"Choose {label} as route destination, {links}","viewer.finder.status.empty":"No matching nodes","viewer.finder.status.count.one":"{count} matching node","viewer.finder.status.count.other":"{count} matching nodes","viewer.finder.noun.nodes":"nodes","viewer.finder.link.one":"{count} link","viewer.finder.link.other":"{count} links","viewer.finder.result.focus.one":"Focus {label}, {count} related connection","viewer.finder.result.focus.other":"Focus {label}, {count} related connections","viewer.finder.status.filtered":"{visible} of {available} {noun}","viewer.finder.status.all":"{available} {noun}","viewer.passport.eyebrow":"Semantic passport","viewer.passport.metadata":"Node metadata","viewer.passport.evidence":"Verified source evidence","viewer.passport.verified":"Verified source","viewer.passport.verificationScope":"Verified against local Git at the pinned revision. Remote access has not been checked.","viewer.passport.reach":"Authored reach","viewer.passport.reach.trace":"Trace authored reachability","viewer.passport.upstream":"Upstream","viewer.passport.downstream":"Downstream","viewer.passport.upstream.trace":"Trace upstream authored reachability","viewer.passport.downstream.trace":"Trace downstream authored reachability","viewer.passport.close":"Close semantic passport","viewer.passport.move":"Move semantic passport. Drag, use arrow keys, or press Home to reset.","viewer.passport.copy":"Copy link","viewer.passport.copy.focus":"Copy link to focused node","viewer.passport.relations":"Relations","viewer.passport.relations.show":"Show connected relationships","viewer.passport.relations.hide":"Hide connected relationships","viewer.passport.relations.list":"Connected relationships","viewer.passport.copyRelation":"Copy relation","viewer.passport.copyNode":"Copy node","viewer.passport.copyPinned":"Copy link to pinned relationship","viewer.passport.copySource":"Copy link to source node","viewer.passport.copy.focused.success":"Focused node link copied","viewer.passport.copy.pinned.success":"Pinned relationship link copied","viewer.passport.copy.focused.failed":"Could not copy focused node link","viewer.passport.copy.pinned.failed":"Could not copy pinned relationship link","viewer.passport.relationship.none":"No connected relationships","viewer.passport.relationship.count.one":"{count} relation","viewer.passport.relationship.count.other":"{count} relations","viewer.passport.relationship.show.one":"Show {count} connected relationship","viewer.passport.relationship.show.other":"Show {count} connected relationships","viewer.passport.relationship.summary":"{out} outgoing · {in} incoming{loops}","viewer.passport.relationship.loops":" · {count} loop","viewer.passport.relationship.explorer":"Direct relationship explorer","viewer.passport.relationship.help":"Use arrow keys to explore relationships. Press Enter or Space to pin details; Escape clears.","viewer.passport.relationship.loopsBack":"loops back","viewer.passport.relationship.connectsTo":"connects to","viewer.passport.relationship.connectsFrom":"connects from","viewer.passport.relationship.pinned":"Pinned relationship · {from} → {to} · {label}","viewer.passport.relationship.inspect":"Inspect relationship {index} of {total}: {from} to {to}, {label}. Press Enter for details.","viewer.passport.relationship.group.out":"Outgoing","viewer.passport.relationship.group.in":"Incoming","viewer.passport.relationship.group.loop":"Self loops","viewer.passport.relationship.row":"{group}: {relationship}, {neighbor}","viewer.passport.relationship.direction.out":"OUT →","viewer.passport.relationship.direction.in":"← IN","viewer.passport.relationship.direction.loop":"LOOP","viewer.passport.sourceCount.one":"{count} verified source reference","viewer.passport.sourceCount.other":"{count} verified source references","viewer.passport.sourceMarker":"SRC","viewer.passport.beacon.one":"{count} verified source; focus this node to inspect","viewer.passport.beacon.other":"{count} verified sources; focus this node to inspect","viewer.passport.repository.open":"Open verified repository revision {revision}","viewer.passport.source.open":"Open verified source {path} at revision {revision}","viewer.passport.source.openLink":"Open ↗","viewer.passport.reach.upstream.one":"Trace {count} upstream authored node","viewer.passport.reach.upstream.other":"Trace {count} upstream authored nodes","viewer.passport.reach.downstream.one":"Trace {count} downstream authored node","viewer.passport.reach.downstream.other":"Trace {count} downstream authored nodes","viewer.passport.reach.noUpstream":"No upstream authored nodes","viewer.passport.reach.noDownstream":"No downstream authored nodes","viewer.passport.reach.status":"{direction} · {nodes} nodes · {links} links · max {hops} hops","viewer.route.eyebrow":"Path","viewer.route.start":"Click where the path starts","viewer.route.start.find":"Find start","viewer.route.start.find.aria":"Find a route start","viewer.route.copy":"Copy link","viewer.route.copy.aria":"Copy link to traced route","viewer.route.clear":"Clear","viewer.route.clear.aria":"Clear route probe","viewer.route.traced":"Path","viewer.route.pickTwo":"Click two nodes on the diagram","viewer.route.pickOne":"Click a node on the diagram","viewer.route.controls":"Route journey controls","viewer.route.previous":"Previous route position","viewer.route.play":"Play route journey","viewer.route.pause":"Pause route journey","viewer.route.replay":"Replay route journey","viewer.route.next":"Next route position","viewer.route.journey":"Journey","viewer.route.pause.label":"Pause","viewer.route.replay.label":"Replay","viewer.route.overview":"Overview","viewer.route.overview.aria":"Show complete route overview","viewer.route.instructions":"Click a start, then an end. Paths follow the arrows.","viewer.route.destination":"Where does the path from {label} end?","viewer.route.destination.find":"Find target","viewer.route.destination.find.aria":"Find a reachable route destination","viewer.route.differentDestination":"Choose a different destination","viewer.route.distinct":"Pick two different nodes.","viewer.route.unreachable":"Cannot reach {label} from here","viewer.route.unreachable.detail":"{target} cannot be reached from {source} along the arrows. Pick a highlighted node.","viewer.route.start.instructions":"Next, pick the end. Only nodes you can reach will light up.","viewer.route.copy.success":"Traced route link copied","viewer.route.copy.failed":"Could not copy traced route link","viewer.route.position":"Route position {index} of {total}: {label}","viewer.route.step":"Step {index} of {total} · {phase} · {label}","viewer.route.motionRequired":"Automatic journey requires Live motion","viewer.route.trigger.clear":"Clear traced route","viewer.route.overview.status":"{nodes} · {hops} · shortest path","viewer.route.overview.node.one":"{count} node","viewer.route.overview.node.other":"{count} nodes","viewer.route.overview.hop.one":"{count} step","viewer.route.overview.hop.other":"{count} steps","viewer.route.phase.playing":"Playing","viewer.route.phase.complete":"Complete","viewer.route.phase.inspecting":"Inspecting","viewer.route.destination.count.one":"{count} reachable node is highlighted. Click it.","viewer.route.destination.count.other":"{count} reachable nodes are highlighted. Click one.","viewer.route.noOutgoing":"No arrows lead out of this node. Clear it and pick another start.","viewer.route.result.title":"{source} to {target}","viewer.route.finder.source.title":"Choose route start","viewer.route.finder.source.placeholder":"Search route sources","viewer.route.finder.source.empty":"No matching route sources","viewer.route.finder.source.results":"Nodes that can start a route","viewer.route.finder.source.noun":"route sources","viewer.route.finder.source.badge":"start","viewer.route.finder.target.title":"Destination from {label}","viewer.route.finder.target.placeholder":"Search reachable destinations","viewer.route.finder.target.empty":"No matching reachable destinations","viewer.route.finder.target.results":"Reachable route destinations","viewer.route.finder.target.noun":"reachable destinations","viewer.route.hop.one":"{count} hop","viewer.route.hop.other":"{count} hops","viewer.lens.eyebrow":"Semantic lens","viewer.lens.title":"Compare system roles","viewer.lens.close":"Close semantic lens","viewer.lens.instruction":"Choose up to two semantic kinds. One reveals its real traffic; two compare only direct authored relationships.","viewer.lens.kinds":"Semantic kinds","viewer.lens.choose":"Choose a kind to inspect its nodes and touching relationships.","viewer.lens.copy":"Copy link to semantic lens","viewer.lens.clear":"Clear semantic lens","viewer.lens.open":"Open semantic lens","viewer.lens.openActive":"Open active semantic lens","viewer.lens.legend":"Semantic legend","viewer.lens.legend.inspect.one":"Inspect {label}, {count} node","viewer.lens.legend.inspect.other":"Inspect {label}, {count} nodes","viewer.lens.kind.count.one":"{label}, {count} node","viewer.lens.kind.count.other":"{label}, {count} nodes","viewer.lens.compare.one":"{first} → {second}: {forward} · {second} → {first}: {reverse} · {count} direct relationship","viewer.lens.compare.other":"{first} → {second}: {forward} · {second} → {first}: {reverse} · {count} direct relationships","viewer.lens.single":"{nodes} · {relationships} · connected peers remain visible","viewer.lens.node.one":"{count} {label} node","viewer.lens.node.other":"{count} {label} nodes","viewer.lens.relationship.one":"{count} touching relationship","viewer.lens.relationship.other":"{count} touching relationships","viewer.radar.title":"Semantic radar","viewer.radar.building":"Building overview","viewer.radar.openFull":"Open full semantic radar","viewer.radar.open":"Open radar","viewer.radar.close":"Close semantic radar","viewer.radar.surface":"Diagram overview. Click a node to focus it, or use arrow keys to pan.","viewer.radar.click":"Click node","viewer.radar.drag":"Drag to pan","viewer.radar.space":"Semantic radar needs more MAP space.","viewer.radar.nodes":"Semantic diagram radar nodes","viewer.radar.focus":"Focus {label} from Semantic Radar","viewer.radar.status":"{count} nodes · {viewport}","viewer.radar.fullMap":"{count} nodes · full map","viewer.radar.compacted":"Radar compacted to avoid covering the Semantic Passport or MAP controls.","viewer.radar.cancelWaiting":"Cancel semantic radar waiting for more MAP space","viewer.radar.needsSpace":"Semantic radar needs more visible MAP space","viewer.radar.viewport.full":"full map","viewer.radar.viewport.width":"{percent}% width","viewer.radar.viewport.scale":"{percent}% viewport","viewer.nav.controls":"Diagram view controls","viewer.nav.route":"Trace a directed route","viewer.nav.route.title":"Trace route (R)","viewer.nav.route.short":"PATH","viewer.nav.radar":"Open semantic radar","viewer.nav.radar.title":"Semantic radar (M)","viewer.nav.radar.short":"MAP","viewer.nav.lens":"Open semantic lens","viewer.nav.lens.title":"Semantic lens (L)","viewer.nav.lens.short":"LENS","viewer.nav.find":"Find a node","viewer.nav.find.title":"Find a node (/)","viewer.outline.title":"Node index","viewer.rail.show":"Notes \u0026 index","viewer.rail.controls":"Side panel","viewer.rail.collapse":"Collapse side panel","viewer.rail.bottom":"Move panel below the diagram","viewer.rail.right":"Move panel beside the diagram","viewer.nav.guide":"Open diagram guide","viewer.nav.guide.title":"Diagram guide (?)","viewer.nav.zoomOut":"Zoom out","viewer.nav.zoomOut.title":"Zoom out (-)","viewer.nav.reset":"Reset diagram view","viewer.nav.reset.title":"Reset view (0)","viewer.nav.read":"READ","viewer.nav.zoomIn":"Zoom in","viewer.nav.zoomIn.title":"Zoom in (+)","viewer.nav.camera":"{hint}. Reset diagram view","viewer.nav.camera.title":"{semantic}{hint} · reset view (0)","viewer.nav.camera.semantic":"Semantic camera active · ","viewer.nav.level.map":"MAP","viewer.nav.level.read":"READ","viewer.nav.level.full":"FULL","viewer.nav.level.auto":"AUTO","viewer.nav.detail.map":"Zoom in to reveal relationship labels and node context","viewer.nav.detail.read":"Zoom in again to reveal tags and annotations","viewer.nav.detail.full":"Full diagram detail","viewer.intent.summary":"{label}. {out} outgoing, {in} incoming{loops}. {total} connections. Press Enter for details.","viewer.intent.loops":", {count} self loop","viewer.common.copied":"Copied","viewer.common.copyFailed":"Copy failed","viewer.common.copyLink":"Copy link","viewer.common.clear":"Clear","viewer.common.close":"Close"}}</script>
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
-      <svg viewBox="0 0 1184 424" data-layout-contract="readable-v2" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="signal-flow" data-quality-profile="showcase">
+      <svg viewBox="0 0 1166 550" data-layout-contract="readable-v2" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="signal-flow" data-quality-profile="showcase">
         <title id="archify-diagram-title">Payment Integrity Guard: Fast Path vs. Atomic Slow Path</title>
-        <desc id="archify-diagram-description">In-Memory Replay Cache Hit vs Database Uniqueness Settlement</desc>
+        <desc id="archify-diagram-description">In-Memory Replay Cache Hit vs Database Uniqueness &amp; OCC Settlement</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5014,43 +5014,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Swimlanes -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="1128" height="114" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="74" class="t-dim" font-size="10" font-weight="600">01 / Fast Path: Application &amp; Replay Tier</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="1110" height="114" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="74" class="t-dim" font-size="10" font-weight="600">01 / Fast Path: In-Memory &amp; Replay Cache</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="186" width="1128" height="114" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="208" class="t-dim" font-size="10" font-weight="600">02 / Slow Path: Atomic Persistence Boundary</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="186" width="1110" height="114" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="208" class="t-dim" font-size="10" font-weight="600">02 / Slow Path: Winning Order Commitment</text>
+
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-2" x="40" y="320" width="1110" height="106" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="exception-lane" data-composition-frame-id="lane-2-exception" x="46" y="326" width="1098" height="94" rx="8" class="c-security-group" stroke-width="1"/>
+        <text x="54" y="342" class="t-security" font-size="10" font-weight="600">EX / Slow Path: Conflict &amp; Loser Reconciliation</text>
 
         <!-- Phase headers -->
-        <line x1="62" y1="35" x2="346.8" y2="35" class="a-default" stroke-width="1.1"/>
-        <rect x="62" y="27" width="284.8" height="16" rx="4" class="c-mask"/>
-        <text x="204.4" y="39" class="t-muted" font-size="8" font-weight="600" text-anchor="middle">Request &amp; Idempotency Check</text>
-        <line x1="438" y1="35" x2="737.2" y2="35" class="a-emphasis" stroke-width="1.1"/>
-        <rect x="438" y="27" width="299.20000000000005" height="16" rx="4" class="c-mask"/>
-        <text x="587.6" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">Coordination &amp; Constraint Gate</text>
-        <line x1="842.8" y1="35" x2="1139.1999999999998" y2="35" class="a-security" stroke-width="1.1"/>
-        <rect x="842.8" y="27" width="296.4" height="16" rx="4" class="c-mask"/>
-        <text x="991" y="39" class="t-security" font-size="8" font-weight="600" text-anchor="middle">Convergence &amp; Response</text>
+        <line x1="62" y1="35" x2="344.8" y2="35" class="a-default" stroke-width="1.1"/>
+        <rect x="62" y="27" width="282.8" height="16" rx="4" class="c-mask"/>
+        <text x="203.4" y="39" class="t-muted" font-size="8" font-weight="600" text-anchor="middle">Request &amp; Idempotency Check</text>
+        <line x1="443.6000000000001" y1="35" x2="740.8" y2="35" class="a-emphasis" stroke-width="1.1"/>
+        <rect x="443.6000000000001" y="27" width="297.19999999999993" height="16" rx="4" class="c-mask"/>
+        <text x="592.2" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">Atomic Persistence Gate</text>
+        <line x1="844.3999999999999" y1="35" x2="1127.1999999999998" y2="35" class="a-security" stroke-width="1.1"/>
+        <rect x="844.3999999999999" y="27" width="282.80000000000007" height="16" rx="4" class="c-mask"/>
+        <text x="985.8" y="39" class="t-security" font-size="8" font-weight="600" text-anchor="middle">Resolution &amp; Convergence</text>
 
         <!-- Workflow groups -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="group" data-composition-frame-id="group-0" x="234.8" y="90" width="521.4000000000001" height="72" rx="9" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="group" data-composition-frame-id="group-0" x="234.8" y="90" width="318.8" height="72" rx="9" class="c-lane" stroke-width="1"/>
         <text x="244.8" y="88" class="t-backend" font-size="7" font-weight="600">Fast Path (Replay Cache Hit)</text>
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="group" data-composition-frame-id="group-1" x="419" y="224" width="740.2" height="72" rx="9" class="c-security-group" stroke-width="1"/>
-        <text x="429" y="222" class="t-security" font-size="7" font-weight="600">Slow Path (Atomic Coordination)</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="group" data-composition-frame-id="group-1" x="425.6" y="224" width="705.6" height="72" rx="9" class="c-security-group" stroke-width="1"/>
+        <text x="435.6" y="222" class="t-security" font-size="7" font-weight="600">Slow Path (Database Uniqueness Settlement)</text>
 
         <!-- Edge paths -->
-        <path data-edge-from="db_boundary" data-edge-to="duplicate_caught" data-edge-label="unique collision" data-edge-key="0" data-edge-id="e_db_dup" data-composition-routing="workflow-v2-auto" data-edge-role="error" data-composition-points="752.2,261;820.5,261;820.5,77;888.8000000000001,77;888.8000000000001,93" d="M 752.2 261 L 820.5 261 L 820.5 77 L 888.8000000000001 77 L 888.8000000000001 93" class="a-security" data-animate="edge" style="--step:6" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="db_boundary" data-edge-to="commit_winner" data-edge-label="first commit" data-edge-key="1" data-edge-id="e_db_winner" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="691.2,295;691.2,311;888.8000000000001,311;888.8000000000001,295" d="M 691.2 295 L 691.2 311 L 888.8000000000001 311 L 888.8000000000001 295" class="a-default" data-animate="edge" style="--step:3" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="duplicate_caught" data-edge-to="reconciled_res" data-edge-label="reconcile 200" data-edge-key="2" data-edge-id="e_dup_recon" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="950.8000000000001,127;1031.2,127" d="M 950.8000000000001 127 L 1031.2 127" class="a-default" data-animate="edge" style="--step:8" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="fast_replay" data-edge-to="cached_receipt" data-edge-label="return cached" data-edge-key="3" data-edge-id="e_fast_receipt" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="544,127;630.2,127" d="M 544 127 L 630.2 127" class="a-default" data-animate="edge" style="--step:9" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="idem_check" data-edge-to="fast_replay" data-edge-label="cache hit" data-edge-key="4" data-edge-id="e_idem_fast" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="362.8,127;424,127" d="M 362.8 127 L 424 127" class="a-default" data-animate="edge" style="--step:10" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="idem_check" data-edge-to="slow_lock" data-edge-label="cache miss" data-edge-key="5" data-edge-id="e_idem_slow" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="300.8,161;300.8,177;361.9,177;361.9,261;423,261" d="M 300.8 161 L 300.8 177 L 361.9 177 L 361.9 261 L 423 261" class="a-default" data-animate="edge" style="--step:1" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="req_ingress" data-edge-to="idem_check" data-edge-label="inspect key" data-edge-key="6" data-edge-id="e_req_idem" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="168,127;238.8,127" d="M 168 127 L 238.8 127" class="a-default" data-animate="edge" style="--step:0" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="slow_lock" data-edge-to="db_boundary" data-edge-label="attempt INSERT" data-edge-key="7" data-edge-id="e_slow_db" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="545,261;630.2,261" d="M 545 261 L 630.2 261" class="a-default" data-animate="edge" style="--step:2" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="commit_winner" data-edge-to="canonical_res" data-edge-label="winner 201" data-edge-key="8" data-edge-id="e_winner_canon" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="949.8000000000001,261;1031.2,261" d="M 949.8000000000001 261 L 1031.2 261" class="a-default" data-animate="edge" style="--step:4" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="attempt_insert" data-edge-to="db_result" data-edge-label="execute insert" data-edge-key="0" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="549.6,261;634.8,261" d="M 549.6 261 L 634.8 261" class="a-default" data-animate="edge" style="--step:2" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="check_idem" data-edge-to="attempt_insert" data-edge-label="Not Found (Miss)" data-edge-key="1" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="358.8,127;374.8,127;374.8,316;489.6,316;489.6,295" d="M 358.8 127 L 374.8 127 L 374.8 316 L 489.6 316 L 489.6 295" class="a-default" data-animate="edge" style="--step:1" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="check_idem" data-edge-to="return_cached" data-edge-label="Found (Hit)" data-edge-key="2" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="358.8,115;424.20000000000005,115;424.20000000000005,177;489.6,177;489.6,161" d="M 358.8 115 L 424.20000000000005 115 L 424.20000000000005 177 L 489.6 177 L 489.6 161" class="a-default" data-animate="edge" style="--step:8" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="db_result" data-edge-to="loser_catch" data-edge-label="Unique Collision" data-edge-key="3" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="754.8,261;822.5999999999999,261;822.5999999999999,338;890.4,338;890.4,354" d="M 754.8 261 L 822.5999999999999 261 L 822.5999999999999 338 L 890.4 338 L 890.4 354" class="a-default" data-animate="edge" style="--step:9" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="db_result" data-edge-to="occ_conflict" data-edge-label="Version Mismatch" data-edge-key="4" data-composition-routing="workflow-v2-auto" data-edge-role="error" data-composition-points="694.8,295;694.8,354" d="M 694.8 295 L 694.8 354" class="a-dashed" data-animate="edge" style="--step:10" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="db_result" data-edge-to="win_commit" data-edge-label="Winner (201)" data-edge-key="5" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="694.8,227;694.8,211;890.4,211;890.4,227" d="M 694.8 227 L 694.8 211 L 890.4 211 L 890.4 227" class="a-default" data-animate="edge" style="--step:3" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="fetch_canonical" data-edge-to="return_success" data-edge-label="reconciled" data-edge-key="6" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="1081.2,354;1081.2,161" d="M 1081.2 354 L 1081.2 161" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="loser_catch" data-edge-to="fetch_canonical" data-edge-label="fetch order" data-edge-key="7" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="950.4,388;1021.2,388" d="M 950.4 388 L 1021.2 388" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="return_cached" data-edge-to="return_success" data-edge-label="replay OK" data-edge-key="8" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="549.6,127;1021.2,127" d="M 549.6 127 L 1021.2 127" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="start_req" data-edge-to="check_idem" data-edge-label="inspect key" data-edge-key="9" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="168,127;238.8,127" d="M 168 127 L 238.8 127" class="a-default" data-animate="edge" style="--step:0" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="win_commit" data-edge-to="return_success" data-edge-label="commit OK" data-edge-key="10" data-composition-routing="workflow-v2-auto" data-edge-role="main" data-composition-points="902.4,227;902.4,176;1005.2,176;1005.2,139;1021.2,139" d="M 902.4 227 L 902.4 176 L 1005.2 176 L 1005.2 139 L 1021.2 139" class="a-default" data-animate="edge" style="--step:4" stroke-width="1.4" marker-end="url(#arrowhead)"/>
 
         <!-- Nodes -->
-        <g id="node-req_ingress" data-node-id="req_ingress" data-node-label="Checkout Request" tabindex="0" role="button" aria-label="Focus Checkout Request, complete_checkout(), Fast Path: Application &amp; Replay Tier › Request &amp; Idempotency Check" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="complete_checkout()" data-node-tag="ingress" data-node-context="Fast Path: Application &amp; Replay Tier › Request &amp; Idempotency Check">
-          <title>Checkout Request · complete_checkout() · Fast Path: Application &amp; Replay Tier › Request &amp; Idempotency Check · ingress</title>
+        <g id="node-start_req" data-node-id="start_req" data-node-label="Complete Checkout" tabindex="0" role="button" aria-label="Focus Complete Checkout, complete_checkout(), Fast Path: In-Memory &amp; Replay Cache › Request &amp; Idempotency Check" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="complete_checkout()" data-node-tag="ingress" data-node-context="Fast Path: In-Memory &amp; Replay Cache › Request &amp; Idempotency Check">
+          <title>Complete Checkout · complete_checkout() · Fast Path: In-Memory &amp; Replay Cache › Request &amp; Idempotency Check · ingress</title>
           <rect x="48" y="93" width="120" height="68" rx="6" class="c-mask"/>
           <rect x="48" y="93" width="120" height="68" rx="6" class="c-frontend" data-animate="node" style="--step:0" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(54 99) scale(0.6875)">
@@ -5059,179 +5065,189 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="108" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Checkout Request</text>
-          <text data-detail="context" x="108" y="142.1" class="t-muted" font-size="8" text-anchor="middle">complete_checkout()</text>
-        <text data-detail="fine" x="108" y="154.9" class="t-frontend" font-size="7" text-anchor="middle">ingress</text>
+          <text data-node-label="" data-detail-anchor="" x="108" y="127.1" class="t-primary" font-size="10.9" font-weight="600" text-anchor="middle">Complete Checkout</text>
+          <text data-detail="context" x="108" y="142" class="t-muted" font-size="8" text-anchor="middle">complete_checkout()</text>
+        <text data-detail="fine" x="108" y="154.8" class="t-frontend" font-size="7" text-anchor="middle">ingress</text>
         </g>
 
-        <g id="node-idem_check" data-node-id="idem_check" data-node-label="Idempotency Check" tabindex="0" role="button" aria-label="Focus Idempotency Check, in-memory key lookup, Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Request &amp; Idempotency Check" aria-pressed="false" data-node-kind="backend" data-node-sublabel="in-memory key lookup" data-node-tag="lookup" data-node-context="Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Request &amp; Idempotency Check">
-          <title>Idempotency Check · in-memory key lookup · Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Request &amp; Idempotency Check · lookup</title>
-          <rect x="238.8" y="93" width="124" height="68" rx="6" class="c-mask"/>
-          <rect x="238.8" y="93" width="124" height="68" rx="6" class="c-backend" data-animate="node" style="--step:1" stroke-width="1.5"/>
+        <g id="node-check_idem" data-node-id="check_idem" data-node-label="Check Idempotency" tabindex="0" role="button" aria-label="Focus Check Idempotency, key lookup, Fast Path: In-Memory &amp; Replay Cache › Fast Path (Replay Cache Hit) › Request &amp; Idempotency Check" aria-pressed="false" data-node-kind="backend" data-node-sublabel="key lookup" data-node-tag="lookup" data-node-context="Fast Path: In-Memory &amp; Replay Cache › Fast Path (Replay Cache Hit) › Request &amp; Idempotency Check">
+          <title>Check Idempotency · key lookup · Fast Path: In-Memory &amp; Replay Cache › Fast Path (Replay Cache Hit) › Request &amp; Idempotency Check · lookup</title>
+          <rect x="238.8" y="93" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="238.8" y="93" width="120" height="68" rx="6" class="c-backend" data-animate="node" style="--step:1" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(244.8 99) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="300.8" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Idempotency Check</text>
-          <text data-detail="context" x="300.8" y="142.1" class="t-muted" font-size="8" text-anchor="middle">in-memory key lookup</text>
-        <text data-detail="fine" x="300.8" y="154.9" class="t-backend" font-size="7" text-anchor="middle">lookup</text>
+          <text data-node-label="" data-detail-anchor="" x="298.8" y="127.1" class="t-primary" font-size="10.9" font-weight="600" text-anchor="middle">Check Idempotency</text>
+          <text data-detail="context" x="298.8" y="142" class="t-muted" font-size="8" text-anchor="middle">key lookup</text>
+        <text data-detail="fine" x="298.8" y="154.8" class="t-backend" font-size="7" text-anchor="middle">lookup</text>
         </g>
 
-        <g id="node-fast_replay" data-node-id="fast_replay" data-node-label="Fast Path Hit" tabindex="0" role="button" aria-label="Focus Fast Path Hit, replay key matched, Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Coordination &amp; Constraint Gate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="replay key matched" data-node-tag="replay" data-node-context="Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Coordination &amp; Constraint Gate">
-          <title>Fast Path Hit · replay key matched · Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Coordination &amp; Constraint Gate · replay</title>
-          <rect x="424" y="93" width="120" height="68" rx="6" class="c-mask"/>
-          <rect x="424" y="93" width="120" height="68" rx="6" class="c-backend" data-animate="node" style="--step:8" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(430 99) scale(0.6875)">
+        <g id="node-return_cached" data-node-id="return_cached" data-node-label="Return Cached" tabindex="0" role="button" aria-label="Focus Return Cached, replay hit, Fast Path: In-Memory &amp; Replay Cache › Fast Path (Replay Cache Hit) › Atomic Persistence Gate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="replay hit" data-node-tag="replay" data-node-context="Fast Path: In-Memory &amp; Replay Cache › Fast Path (Replay Cache Hit) › Atomic Persistence Gate">
+          <title>Return Cached · replay hit · Fast Path: In-Memory &amp; Replay Cache › Fast Path (Replay Cache Hit) › Atomic Persistence Gate · replay</title>
+          <rect x="429.6" y="93" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="429.6" y="93" width="120" height="68" rx="6" class="c-backend" data-animate="node" style="--step:8" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(435.6 99) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="484" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Fast Path Hit</text>
-          <text data-detail="context" x="484" y="142.1" class="t-muted" font-size="8" text-anchor="middle">replay key matched</text>
-        <text data-detail="fine" x="484" y="154.9" class="t-backend" font-size="7" text-anchor="middle">replay</text>
+          <text data-node-label="" data-detail-anchor="" x="489.6" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Return Cached</text>
+          <text data-detail="context" x="489.6" y="142.1" class="t-muted" font-size="8" text-anchor="middle">replay hit</text>
+        <text data-detail="fine" x="489.6" y="154.9" class="t-backend" font-size="7" text-anchor="middle">replay</text>
         </g>
 
-        <g id="node-cached_receipt" data-node-id="cached_receipt" data-node-label="Cached Receipt" tabindex="0" role="button" aria-label="Focus Cached Receipt, return recorded result, Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Coordination &amp; Constraint Gate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="return recorded result" data-node-tag="cached" data-node-context="Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Coordination &amp; Constraint Gate">
-          <title>Cached Receipt · return recorded result · Fast Path: Application &amp; Replay Tier › Fast Path (Replay Cache Hit) › Coordination &amp; Constraint Gate · cached</title>
-          <rect x="630.2" y="93" width="122" height="68" rx="6" class="c-mask"/>
-          <rect x="630.2" y="93" width="122" height="68" rx="6" class="c-backend" data-animate="node" style="--step:9" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(636.2 99) scale(0.6875)">
+        <g id="node-return_success" data-node-id="return_success" data-node-label="Return Success" tabindex="0" role="button" aria-label="Focus Return Success, canonical receipt, Fast Path: In-Memory &amp; Replay Cache › Resolution &amp; Convergence" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="canonical receipt" data-node-tag="completed" data-node-context="Fast Path: In-Memory &amp; Replay Cache › Resolution &amp; Convergence">
+          <title>Return Success · canonical receipt · Fast Path: In-Memory &amp; Replay Cache › Resolution &amp; Convergence · completed</title>
+          <rect x="1021.2" y="93" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="1021.2" y="93" width="120" height="68" rx="6" class="c-frontend" data-animate="node" style="--step:5" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(1027.2 99) scale(0.6875)">
+            <rect x="2" y="3" width="12" height="10" rx="2"/>
+            <path d="M2 6.5h12"/>
+            <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
+            <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1081.2" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Return Success</text>
+          <text data-detail="context" x="1081.2" y="142.1" class="t-muted" font-size="8" text-anchor="middle">canonical receipt</text>
+        <text data-detail="fine" x="1081.2" y="154.9" class="t-frontend" font-size="7" text-anchor="middle">completed</text>
+        </g>
+
+        <g id="node-attempt_insert" data-node-id="attempt_insert" data-node-label="Attempt Insert" tabindex="0" role="button" aria-label="Focus Attempt Insert, WHERE ver = expected, Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Atomic Persistence Gate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="WHERE ver = expected" data-node-tag="atomic" data-node-context="Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Atomic Persistence Gate">
+          <title>Attempt Insert · WHERE ver = expected · Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Atomic Persistence Gate · atomic</title>
+          <rect x="429.6" y="227" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="429.6" y="227" width="120" height="68" rx="6" class="c-backend" data-animate="node" style="--step:2" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(435.6 233) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="691.2" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Cached Receipt</text>
-          <text data-detail="context" x="691.2" y="142.1" class="t-muted" font-size="8" text-anchor="middle">return recorded result</text>
-        <text data-detail="fine" x="691.2" y="154.9" class="t-backend" font-size="7" text-anchor="middle">cached</text>
+          <text data-node-label="" data-detail-anchor="" x="489.6" y="261.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Attempt Insert</text>
+          <text data-detail="context" x="489.6" y="276.1" class="t-muted" font-size="8" text-anchor="middle">WHERE ver = expected</text>
+        <text data-detail="fine" x="489.6" y="288.9" class="t-backend" font-size="7" text-anchor="middle">atomic</text>
         </g>
 
-        <g id="node-duplicate_caught" data-node-id="duplicate_caught" data-node-label="Duplicate Caught" tabindex="0" role="button" aria-label="Focus Duplicate Caught, DuplicateOrderError, Fast Path: Application &amp; Replay Tier › Convergence &amp; Response" aria-pressed="false" data-node-kind="security" data-node-sublabel="DuplicateOrderError" data-node-tag="loser" data-node-context="Fast Path: Application &amp; Replay Tier › Convergence &amp; Response">
-          <title>Duplicate Caught · DuplicateOrderError · Fast Path: Application &amp; Replay Tier › Convergence &amp; Response · loser</title>
-          <rect x="826.8000000000001" y="93" width="124" height="68" rx="6" class="c-mask"/>
-          <rect x="826.8000000000001" y="93" width="124" height="68" rx="6" class="c-security" data-animate="node" style="--step:10" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(832.8000000000001 99) scale(0.6875)">
+        <g id="node-db_result" data-node-id="db_result" data-node-label="DB Result Gate" tabindex="0" role="button" aria-label="Focus DB Result Gate, UNIQUE &amp; OCC, Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Atomic Persistence Gate" aria-pressed="false" data-node-kind="security" data-node-sublabel="UNIQUE &amp; OCC" data-node-tag="constraint" data-node-context="Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Atomic Persistence Gate">
+          <title>DB Result Gate · UNIQUE &amp; OCC · Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Atomic Persistence Gate · constraint</title>
+          <rect x="634.8" y="227" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="634.8" y="227" width="120" height="68" rx="6" class="c-security" data-animate="node" style="--step:3" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(640.8 233) scale(0.6875)">
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="888.8000000000001" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Duplicate Caught</text>
-          <text data-detail="context" x="888.8000000000001" y="142.1" class="t-muted" font-size="8" text-anchor="middle">DuplicateOrderError</text>
-        <text data-detail="fine" x="888.8000000000001" y="154.9" class="t-security" font-size="7" text-anchor="middle">loser</text>
+          <text data-node-label="" data-detail-anchor="" x="694.8" y="261.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">DB Result Gate</text>
+          <text data-detail="context" x="694.8" y="276.1" class="t-muted" font-size="8" text-anchor="middle">UNIQUE &amp; OCC</text>
+        <text data-detail="fine" x="694.8" y="288.9" class="t-security" font-size="7" text-anchor="middle">constraint</text>
         </g>
 
-        <g id="node-reconciled_res" data-node-id="reconciled_res" data-node-label="Canonical Order" tabindex="0" role="button" aria-label="Focus Canonical Order, SELECT by checkout_id, Fast Path: Application &amp; Replay Tier › Convergence &amp; Response" aria-pressed="false" data-node-kind="backend" data-node-sublabel="SELECT by checkout_id" data-node-tag="reconcile" data-node-context="Fast Path: Application &amp; Replay Tier › Convergence &amp; Response">
-          <title>Canonical Order · SELECT by checkout_id · Fast Path: Application &amp; Replay Tier › Convergence &amp; Response · reconcile</title>
-          <rect x="1031.2" y="93" width="124" height="68" rx="6" class="c-mask"/>
-          <rect x="1031.2" y="93" width="124" height="68" rx="6" class="c-backend" data-animate="node" style="--step:11" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1037.2 99) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+        <g id="node-win_commit" data-node-id="win_commit" data-node-label="Insert Succeeded" tabindex="0" role="button" aria-label="Focus Insert Succeeded, 201 Created, Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Resolution &amp; Convergence" aria-pressed="false" data-node-kind="database" data-node-sublabel="201 Created" data-node-tag="winner" data-node-context="Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Resolution &amp; Convergence">
+          <title>Insert Succeeded · 201 Created · Slow Path: Winning Order Commitment › Slow Path (Database Uniqueness Settlement) › Resolution &amp; Convergence · winner</title>
+          <rect x="830.4" y="227" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="830.4" y="227" width="120" height="68" rx="6" class="c-database" data-animate="node" style="--step:4" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(836.4 233) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="1093.2" y="127.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Canonical Order</text>
-          <text data-detail="context" x="1093.2" y="142.1" class="t-muted" font-size="8" text-anchor="middle">SELECT by checkout_id</text>
-        <text data-detail="fine" x="1093.2" y="154.9" class="t-backend" font-size="7" text-anchor="middle">reconcile</text>
+          <text data-node-label="" data-detail-anchor="" x="890.4" y="261.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Insert Succeeded</text>
+          <text data-detail="context" x="890.4" y="276.1" class="t-muted" font-size="8" text-anchor="middle">201 Created</text>
+        <text data-detail="fine" x="890.4" y="288.9" class="t-database" font-size="7" text-anchor="middle">winner</text>
         </g>
 
-        <g id="node-slow_lock" data-node-id="slow_lock" data-node-label="Slow Path Miss" tabindex="0" role="button" aria-label="Focus Slow Path Miss, acquire advisory lock, Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Coordination &amp; Constraint Gate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="acquire advisory lock" data-node-tag="lock" data-node-context="Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Coordination &amp; Constraint Gate">
-          <title>Slow Path Miss · acquire advisory lock · Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Coordination &amp; Constraint Gate · lock</title>
-          <rect x="423" y="227" width="122" height="68" rx="6" class="c-mask"/>
-          <rect x="423" y="227" width="122" height="68" rx="6" class="c-backend" data-animate="node" style="--step:2" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(429 233) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-node-label="" data-detail-anchor="" x="484" y="261.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Slow Path Miss</text>
-          <text data-detail="context" x="484" y="276.1" class="t-muted" font-size="8" text-anchor="middle">acquire advisory lock</text>
-        <text data-detail="fine" x="484" y="288.9" class="t-backend" font-size="7" text-anchor="middle">lock</text>
-        </g>
-
-        <g id="node-db_boundary" data-node-id="db_boundary" data-node-label="UNIQUE Barrier" tabindex="0" role="button" aria-label="Focus UNIQUE Barrier, orders(checkout_id), Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Coordination &amp; Constraint Gate" aria-pressed="false" data-node-kind="security" data-node-sublabel="orders(checkout_id)" data-node-tag="constraint" data-node-context="Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Coordination &amp; Constraint Gate">
-          <title>UNIQUE Barrier · orders(checkout_id) · Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Coordination &amp; Constraint Gate · constraint</title>
-          <rect x="630.2" y="227" width="122" height="68" rx="6" class="c-mask"/>
-          <rect x="630.2" y="227" width="122" height="68" rx="6" class="c-security" data-animate="node" style="--step:3" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(636.2 233) scale(0.6875)">
+        <g id="node-occ_conflict" data-node-id="occ_conflict" data-node-label="409 Conflict" tabindex="0" role="button" aria-label="Focus 409 Conflict, StateConflictError, Slow Path: Conflict &amp; Loser Reconciliation › Atomic Persistence Gate" aria-pressed="false" data-node-kind="security" data-node-sublabel="StateConflictError" data-node-tag="stale read" data-node-context="Slow Path: Conflict &amp; Loser Reconciliation › Atomic Persistence Gate">
+          <title>409 Conflict · StateConflictError · Slow Path: Conflict &amp; Loser Reconciliation › Atomic Persistence Gate · stale read</title>
+          <rect x="634.8" y="354" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="634.8" y="354" width="120" height="68" rx="6" class="c-security" data-animate="node" style="--step:12" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(640.8 360) scale(0.6875)">
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="691.2" y="261.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">UNIQUE Barrier</text>
-          <text data-detail="context" x="691.2" y="276.1" class="t-muted" font-size="8" text-anchor="middle">orders(checkout_id)</text>
-        <text data-detail="fine" x="691.2" y="288.9" class="t-security" font-size="7" text-anchor="middle">constraint</text>
+          <text data-node-label="" data-detail-anchor="" x="694.8" y="388.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">409 Conflict</text>
+          <text data-detail="context" x="694.8" y="403.1" class="t-muted" font-size="8" text-anchor="middle">StateConflictError</text>
+        <text data-detail="fine" x="694.8" y="415.9" class="t-security" font-size="7" text-anchor="middle">stale read</text>
         </g>
 
-        <g id="node-commit_winner" data-node-id="commit_winner" data-node-label="Order Committed" tabindex="0" role="button" aria-label="Focus Order Committed, 201 Created (winner), Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Convergence &amp; Response" aria-pressed="false" data-node-kind="database" data-node-sublabel="201 Created (winner)" data-node-tag="winner" data-node-context="Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Convergence &amp; Response">
-          <title>Order Committed · 201 Created (winner) · Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Convergence &amp; Response · winner</title>
-          <rect x="827.8000000000001" y="227" width="122" height="68" rx="6" class="c-mask"/>
-          <rect x="827.8000000000001" y="227" width="122" height="68" rx="6" class="c-database" data-animate="node" style="--step:4" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(833.8000000000001 233) scale(0.6875)">
-            <ellipse cx="8" cy="4" rx="5" ry="2"/>
-            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+        <g id="node-loser_catch" data-node-id="loser_catch" data-node-label="Catch Duplicate" tabindex="0" role="button" aria-label="Focus Catch Duplicate, DuplicateOrderError, Slow Path: Conflict &amp; Loser Reconciliation › Resolution &amp; Convergence" aria-pressed="false" data-node-kind="backend" data-node-sublabel="DuplicateOrderError" data-node-tag="collision" data-node-context="Slow Path: Conflict &amp; Loser Reconciliation › Resolution &amp; Convergence">
+          <title>Catch Duplicate · DuplicateOrderError · Slow Path: Conflict &amp; Loser Reconciliation › Resolution &amp; Convergence · collision</title>
+          <rect x="830.4" y="354" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="830.4" y="354" width="120" height="68" rx="6" class="c-backend" data-animate="node" style="--step:12" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(836.4 360) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="888.8000000000001" y="261.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Order Committed</text>
-          <text data-detail="context" x="888.8000000000001" y="276.1" class="t-muted" font-size="8" text-anchor="middle">201 Created (winner)</text>
-        <text data-detail="fine" x="888.8000000000001" y="288.9" class="t-database" font-size="7" text-anchor="middle">winner</text>
+          <text data-node-label="" data-detail-anchor="" x="890.4" y="388.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Catch Duplicate</text>
+          <text data-detail="context" x="890.4" y="403.1" class="t-muted" font-size="8" text-anchor="middle">DuplicateOrderError</text>
+        <text data-detail="fine" x="890.4" y="415.9" class="t-backend" font-size="7" text-anchor="middle">collision</text>
         </g>
 
-        <g id="node-canonical_res" data-node-id="canonical_res" data-node-label="Committed Receipt" tabindex="0" role="button" aria-label="Focus Committed Receipt, 201 Created response, Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Convergence &amp; Response" aria-pressed="false" data-node-kind="database" data-node-sublabel="201 Created response" data-node-tag="success" data-node-context="Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Convergence &amp; Response">
-          <title>Committed Receipt · 201 Created response · Slow Path: Atomic Persistence Boundary › Slow Path (Atomic Coordination) › Convergence &amp; Response · success</title>
-          <rect x="1031.2" y="227" width="124" height="68" rx="6" class="c-mask"/>
-          <rect x="1031.2" y="227" width="124" height="68" rx="6" class="c-database" data-animate="node" style="--step:5" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1037.2 233) scale(0.6875)">
-            <ellipse cx="8" cy="4" rx="5" ry="2"/>
-            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+        <g id="node-fetch_canonical" data-node-id="fetch_canonical" data-node-label="Fetch Existing" tabindex="0" role="button" aria-label="Focus Fetch Existing, SELECT by checkout_id, Slow Path: Conflict &amp; Loser Reconciliation › Resolution &amp; Convergence" aria-pressed="false" data-node-kind="backend" data-node-sublabel="SELECT by checkout_id" data-node-tag="reconcile" data-node-context="Slow Path: Conflict &amp; Loser Reconciliation › Resolution &amp; Convergence">
+          <title>Fetch Existing · SELECT by checkout_id · Slow Path: Conflict &amp; Loser Reconciliation › Resolution &amp; Convergence · reconcile</title>
+          <rect x="1021.2" y="354" width="120" height="68" rx="6" class="c-mask"/>
+          <rect x="1021.2" y="354" width="120" height="68" rx="6" class="c-backend" data-animate="node" style="--step:12" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1027.2 360) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="1093.2" y="261.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Committed Receipt</text>
-          <text data-detail="context" x="1093.2" y="276.1" class="t-muted" font-size="8" text-anchor="middle">201 Created response</text>
-        <text data-detail="fine" x="1093.2" y="288.9" class="t-database" font-size="7" text-anchor="middle">success</text>
+          <text data-node-label="" data-detail-anchor="" x="1081.2" y="388.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Fetch Existing</text>
+          <text data-detail="context" x="1081.2" y="403.1" class="t-muted" font-size="8" text-anchor="middle">SELECT by checkout_id</text>
+        <text data-detail="fine" x="1081.2" y="415.9" class="t-backend" font-size="7" text-anchor="middle">reconcile</text>
         </g>
 
         <!-- Edge labels -->
-        <g data-detail="context" data-edge-from="db_boundary" data-edge-to="duplicate_caught" data-edge-label="unique collision" data-edge-key="0" data-edge-id="e_db_dup">
-          <rect x="811.2500000000001" y="57" width="86.8" height="14" rx="3" class="c-mask"/>
-          <text x="854.6500000000001" y="67" class="t-edge-security" font-size="8" text-anchor="middle">unique collision</text>
+        <g data-detail="context" data-edge-from="attempt_insert" data-edge-to="db_result" data-edge-label="execute insert" data-edge-key="0">
+          <rect x="553.6" y="241" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="592.2" y="251" class="t-edge-default" font-size="8" text-anchor="middle">execute insert</text>
         </g>
-        <g data-detail="context" data-edge-from="db_boundary" data-edge-to="commit_winner" data-edge-label="first commit" data-edge-key="1" data-edge-id="e_db_winner">
-          <rect x="756.2" y="291" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="790" y="301" class="t-edge-default" font-size="8" text-anchor="middle">first commit</text>
+        <g data-detail="context" data-edge-from="check_idem" data-edge-to="attempt_insert" data-edge-label="Not Found (Miss)" data-edge-key="1">
+          <rect x="388.80000000000007" y="296" width="86.8" height="14" rx="3" class="c-mask"/>
+          <text x="432.20000000000005" y="306" class="t-edge-default" font-size="8" text-anchor="middle">Not Found (Miss)</text>
         </g>
-        <g data-detail="context" data-edge-from="duplicate_caught" data-edge-to="reconciled_res" data-edge-label="reconcile 200" data-edge-key="2" data-edge-id="e_dup_recon">
-          <rect x="954.8" y="107" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="991" y="117" class="t-edge-default" font-size="8" text-anchor="middle">reconcile 200</text>
+        <g data-detail="context" data-edge-from="check_idem" data-edge-to="return_cached" data-edge-label="Found (Hit)" data-edge-key="2">
+          <rect x="360.1" y="95" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="391.5" y="105" class="t-edge-default" font-size="8" text-anchor="middle">Found (Hit)</text>
         </g>
-        <g data-detail="context" data-edge-from="fast_replay" data-edge-to="cached_receipt" data-edge-label="return cached" data-edge-key="3" data-edge-id="e_fast_receipt">
-          <rect x="550.9" y="107" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="587.1" y="117" class="t-edge-default" font-size="8" text-anchor="middle">return cached</text>
+        <g data-detail="context" data-edge-from="db_result" data-edge-to="loser_catch" data-edge-label="Unique Collision" data-edge-key="3">
+          <rect x="813.1" y="318" width="86.8" height="14" rx="3" class="c-mask"/>
+          <text x="856.5" y="328" class="t-edge-default" font-size="8" text-anchor="middle">Unique Collision</text>
         </g>
-        <g data-detail="context" data-edge-from="idem_check" data-edge-to="fast_replay" data-edge-label="cache hit" data-edge-key="4" data-edge-id="e_idem_fast">
-          <rect x="366.79999999999995" y="107" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="393.4" y="117" class="t-edge-default" font-size="8" text-anchor="middle">cache hit</text>
+        <g data-detail="context" data-edge-from="db_result" data-edge-to="occ_conflict" data-edge-label="Version Mismatch" data-edge-key="4">
+          <rect x="651.4" y="314.5" width="86.8" height="14" rx="3" class="c-mask"/>
+          <text x="694.8" y="324.5" class="t-edge-dashed" font-size="8" text-anchor="middle">Version Mismatch</text>
         </g>
-        <g data-detail="context" data-edge-from="idem_check" data-edge-to="slow_lock" data-edge-label="cache miss" data-edge-key="5" data-edge-id="e_idem_slow">
-          <rect x="363.45" y="241" width="58" height="14" rx="3" class="c-mask"/>
-          <text x="392.45" y="251" class="t-edge-default" font-size="8" text-anchor="middle">cache miss</text>
+        <g data-detail="context" data-edge-from="db_result" data-edge-to="win_commit" data-edge-label="Winner (201)" data-edge-key="5">
+          <rect x="758.8" y="191" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="792.5999999999999" y="201" class="t-edge-default" font-size="8" text-anchor="middle">Winner (201)</text>
         </g>
-        <g data-detail="context" data-edge-from="req_ingress" data-edge-to="idem_check" data-edge-label="inspect key" data-edge-key="6" data-edge-id="e_req_idem">
+        <g data-detail="context" data-edge-from="fetch_canonical" data-edge-to="return_success" data-edge-label="reconciled" data-edge-key="6">
+          <rect x="1052.2" y="247.5" width="58" height="14" rx="3" class="c-mask"/>
+          <text x="1081.2" y="257.5" class="t-edge-default" font-size="8" text-anchor="middle">reconciled</text>
+        </g>
+        <g data-detail="context" data-edge-from="loser_catch" data-edge-to="fetch_canonical" data-edge-label="fetch order" data-edge-key="7">
+          <rect x="954.4" y="368" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="985.8" y="378" class="t-edge-default" font-size="8" text-anchor="middle">fetch order</text>
+        </g>
+        <g data-detail="context" data-edge-from="return_cached" data-edge-to="return_success" data-edge-label="replay OK" data-edge-key="8">
+          <rect x="758.8000000000001" y="107" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="785.4000000000001" y="117" class="t-edge-default" font-size="8" text-anchor="middle">replay OK</text>
+        </g>
+        <g data-detail="context" data-edge-from="start_req" data-edge-to="check_idem" data-edge-label="inspect key" data-edge-key="9">
           <rect x="172" y="107" width="62.8" height="14" rx="3" class="c-mask"/>
           <text x="203.4" y="117" class="t-edge-default" font-size="8" text-anchor="middle">inspect key</text>
         </g>
-        <g data-detail="context" data-edge-from="slow_lock" data-edge-to="db_boundary" data-edge-label="attempt INSERT" data-edge-key="7" data-edge-id="e_slow_db">
-          <rect x="549" y="241" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="587.6" y="251" class="t-edge-default" font-size="8" text-anchor="middle">attempt INSERT</text>
-        </g>
-        <g data-detail="context" data-edge-from="commit_winner" data-edge-to="canonical_res" data-edge-label="winner 201" data-edge-key="8" data-edge-id="e_winner_canon">
-          <rect x="961.5" y="241" width="58" height="14" rx="3" class="c-mask"/>
-          <text x="990.5" y="251" class="t-edge-default" font-size="8" text-anchor="middle">winner 201</text>
+        <g data-detail="context" data-edge-from="win_commit" data-edge-to="return_success" data-edge-label="commit OK" data-edge-key="10">
+          <rect x="927.1999999999999" y="156" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="953.8" y="166" class="t-edge-default" font-size="8" text-anchor="middle">commit OK</text>
         </g>
 
         <!-- Legend -->
         <g data-legend="" data-legend-bridge="">
-          <text x="20" y="324" class="t-primary" font-size="12" font-weight="650">Legend</text>
-          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="User UI" data-legend-x="20" data-legend-baseline="344" data-legend-width="74">
-            <rect x="20" y="336" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
-            <text x="42" y="344" class="t-muted" font-size="7.5" font-weight="500">User UI</text>
+          <text x="20" y="450" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="User UI" data-legend-x="20" data-legend-baseline="470" data-legend-width="74">
+            <rect x="20" y="462" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
+            <text x="42" y="470" class="t-muted" font-size="7.5" font-weight="500">User UI</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Agent logic" data-legend-x="101" data-legend-baseline="344" data-legend-width="91">
-            <rect x="101" y="336" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-            <text x="123" y="344" class="t-muted" font-size="7.5" font-weight="500">Agent logic</text>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Agent logic" data-legend-x="101" data-legend-baseline="470" data-legend-width="91">
+            <rect x="101" y="462" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+            <text x="123" y="470" class="t-muted" font-size="7.5" font-weight="500">Agent logic</text>
           </g>
-          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="Policy" data-legend-x="199" data-legend-baseline="344" data-legend-width="70">
-            <rect x="199" y="336" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
-            <text x="221" y="344" class="t-muted" font-size="7.5" font-weight="500">Policy</text>
+          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="Policy" data-legend-x="199" data-legend-baseline="470" data-legend-width="70">
+            <rect x="199" y="462" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
+            <text x="221" y="470" class="t-muted" font-size="7.5" font-weight="500">Policy</text>
           </g>
-          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="Context / trace" data-legend-x="276" data-legend-baseline="344" data-legend-width="109">
-            <rect x="276" y="336" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
-            <text x="298" y="344" class="t-muted" font-size="7.5" font-weight="500">Context / trace</text>
+          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="Context / trace" data-legend-x="276" data-legend-baseline="470" data-legend-width="109">
+            <rect x="276" y="462" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
+            <text x="298" y="470" class="t-muted" font-size="7.5" font-weight="500">Context / trace</text>
           </g>
         </g>
       </svg>
@@ -5410,7 +5426,38 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     </div>
     <!-- Info Cards -->
     <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Fast Path (Cache Hit)</h3>
+        </div>
+        <ul>
+          <li>In-memory idempotency check intercepts repeated requests early</li>
+          <li>Returns recorded order response immediately without database load</li>
+        </ul>
+      </div>
 
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot rose"></div>
+          <h3>Slow Path (Persistence Boundary)</h3>
+        </div>
+        <ul>
+          <li>UNIQUE(orders.checkout_id) guarantees exactly one committed order</li>
+          <li>Losing concurrent worker catches DuplicateOrderError and reconciles to canonical order</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>OCC Freshness Guard</h3>
+        </div>
+        <ul>
+          <li>Checks expected version against storage before order insertion</li>
+          <li>Rejects stale writes with 409 StateConflictError if cart changed</li>
+        </ul>
+      </div>
     </div>
     <nav class="node-outline no-print" id="node-outline" hidden aria-labelledby="node-outline-title">
       <div class="node-outline-head">
