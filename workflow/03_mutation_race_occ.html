@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 3.0.1">
   <meta name="archify-reader-contract" content="declared-wide-v1">
-  <title>Mutation Race Sequence (Optimistic Concurrency) Diagram</title>
+  <title>UCP Agent: Mutation Race Sequence &amp; Optimistic Concurrency Control</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4978,9 +4978,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
            data-preset-badge-blueprint="BLUEPRINT / REV 01"
            data-preset-badge-editorial="EDITORIAL / FIELD NOTE">
         <div class="pulse-dot"></div>
-        <h1>Mutation Race Sequence (Optimistic Concurrency)</h1>
+        <h1>UCP Agent: Mutation Race Sequence &amp; Optimistic Concurrency Control</h1>
       </div>
-      <p class="subtitle">Interleaving Cart Mutation During Payment and OCC Stale-Write Rejection</p>
+      <p class="subtitle">Detecting Dirty Reads: Protecting Shared Shopping Carts from Interleaving Background Mutations</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity","revision":"54ba6c742070d2dc742a973fb86c73bb9c2a635f","shortRevision":"54ba6c7","label":"the-write-path-code/ch11-13-ucp-a2a-payment-integrity","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/tree/54ba6c742070d2dc742a973fb86c73bb9c2a635f"},"referenceCount":4,"nodes":{"buyer":[{"path":"app/services/checkout_service.py","line":86,"endLine":94,"label":"complete_checkout()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L86-L94"}],"svc":[{"path":"app/services/checkout_service.py","line":118,"endLine":133,"label":"create_order_safe()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L118-L133"}],"other":[{"path":"app/services/checkout_service.py","line":40,"endLine":60,"label":"add_item()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L40-L60"}],"db":[{"path":"app/infra/store.py","line":230,"endLine":258,"label":"checkouts \u0026 orders","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L230-L258"}]}}</script>
@@ -4989,8 +4989,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
       <svg viewBox="0 0 1080 680" data-sequence-column-fit="spread" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="signal-flow" data-quality-profile="showcase">
-        <title id="archify-diagram-title">Mutation Race Sequence (Optimistic Concurrency)</title>
-        <desc id="archify-diagram-description">Interleaving Cart Mutation During Payment and OCC Stale-Write Rejection</desc>
+        <title id="archify-diagram-title">UCP Agent: Mutation Race Sequence &amp; Optimistic Concurrency Control</title>
+        <desc id="archify-diagram-description">Detecting Dirty Reads: Protecting Shared Shopping Carts from Interleaving Background Mutations</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5387,24 +5387,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Snapshot vs Background Mutation</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Multi-Actor Hazard: Concurrent Cart Interleaving</h3>
         </div>
         <ul>
-          <li>Buyer reads cart snapshot at version 1 ($100)</li>
-          <li>Concurrent mutator adds item advancing stored state to version 2 ($150)</li>
+          <li><strong>Idempotency is Not Enough:</strong> Request deduplication only prevents identical repeats; it cannot stop independent concurrent actors (users or agents) modifying shared cart contents</li>
+          <li><strong>The Race Window:</strong> Buyer Agent reads Cart snapshot at Version 1 ($100), but before checkout commits, a concurrent mutator adds emergency items, updating durable state to Version 2 ($150)</li>
+          <li><strong>Silent Inventory &amp; Price Bleed:</strong> Blindly committing against Version 1 would deliver $150 of inventory for $100, causing immediate financial loss and contract disputes</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>OCC Validation Gate</h3>
+          <div class="card-dot emerald"></div>
+          <h3>Compare-and-Swap Gate: Atomic Version Verification</h3>
         </div>
         <ul>
-          <li>Buyer attempts commit asserting expected version 1</li>
-          <li>Database detects version mismatch (stored 2 != expected 1)</li>
-          <li>Raises StateConflictError: stale write is safely rejected</li>
+          <li><strong>Schema Versioning:</strong> Every legitimate cart update monotonically increments the <code>version</code> column in durable persistence</li>
+          <li><strong>Conditional Commit Predicate:</strong> Checkout executes <code>UPDATE checkouts SET ... WHERE id = ? AND version = ?</code>, asserting freshness against live database state</li>
+          <li><strong>Deterministic Collision Detection:</strong> Because stored version is now 2 while Buyer expected version is 1, the update touches 0 rows and triggers an immediate conflict</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>Fail-Closed Defense: Stale Write Interception (409 Conflict)</h3>
+        </div>
+        <ul>
+          <li><strong>Zero Partial Commits:</strong> Persistence rejects the stale write and raises <code>StateConflictError</code> without creating an order row or mutating payment state</li>
+          <li><strong>Clear HTTP 409 Semantics:</strong> Returns a structured conflict status code to the client instead of a misleading 500 error or silent data overwrite</li>
+          <li><strong>Diagnostic State Payload:</strong> Provides current database version and updated monetary total so the caller understands the precise nature of the conflict</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Business Impact: Non-Blocking High-Throughput Commerce</h3>
+        </div>
+        <ul>
+          <li><strong>Lock-Free Concurrency:</strong> Optimistic Concurrency Control avoids heavy database row locks that bottleneck high-volume checkout funnels</li>
+          <li><strong>Contract &amp; Price Integrity:</strong> Guarantees both buyer and merchant agree to identical terms, prices, and quantities before money moves</li>
+          <li><strong>Structured Agent Recovery:</strong> Enables autonomous agents to inspect deltas, request human sign-off if price jumped, and cleanly re-synchronize</li>
         </ul>
       </div>
     </div>

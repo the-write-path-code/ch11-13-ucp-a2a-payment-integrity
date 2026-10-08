@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 3.0.1">
   <meta name="archify-reader-contract" content="declared-wide-v1">
-  <title>Deployment Topology (Multi-Worker) Diagram</title>
+  <title>UCP Agent: Multi-Worker Deployment Topology &amp; Payment Integrity Boundary</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4978,9 +4978,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
            data-preset-badge-blueprint="BLUEPRINT / REV 01"
            data-preset-badge-editorial="EDITORIAL / FIELD NOTE">
         <div class="pulse-dot"></div>
-        <h1>Deployment Topology (Multi-Worker)</h1>
+        <h1>UCP Agent: Multi-Worker Deployment Topology &amp; Payment Integrity Boundary</h1>
       </div>
-      <p class="subtitle">Stateless Workers and Shared SQLite Persistence Boundary</p>
+      <p class="subtitle">Stateless Worker Fleet Architecture: Decoupling Autonomous Agent Execution from the Atomic Persistence Barrier</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity","revision":"54ba6c742070d2dc742a973fb86c73bb9c2a635f","shortRevision":"54ba6c7","label":"the-write-path-code/ch11-13-ucp-a2a-payment-integrity","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/tree/54ba6c742070d2dc742a973fb86c73bb9c2a635f"},"referenceCount":6,"nodes":{"lb":[{"path":"app/main.py","line":14,"endLine":18,"label":"create_app()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/main.py#L14-L18"}],"w1":[{"path":"app/services/checkout_service.py","line":127,"endLine":132,"label":"StateConflictError","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L127-L132"}],"w2":[{"path":"app/services/checkout_service.py","line":122,"endLine":126,"label":"create_order_safe()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L122-L126"}],"w3":[{"path":"app/services/checkout_service.py","line":86,"endLine":105,"label":"complete_checkout()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L86-L105"}],"w4":[{"path":"app/infra/idempotency.py","line":28,"endLine":42,"label":"IdempotencyStore","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/idempotency.py#L28-L42"}],"db":[{"path":"app/infra/store.py","line":218,"endLine":258,"label":"SQLiteStore","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L218-L258"}]}}</script>
@@ -4989,8 +4989,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
       <svg viewBox="0 0 960 520" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="signal-flow" data-quality-profile="showcase" data-diagram-type="architecture" data-reader-fit="authored-height">
-        <title id="archify-diagram-title">Deployment Topology (Multi-Worker)</title>
-        <desc id="archify-diagram-description">Stateless Workers and Shared SQLite Persistence Boundary</desc>
+        <title id="archify-diagram-title">UCP Agent: Multi-Worker Deployment Topology &amp; Payment Integrity Boundary</title>
+        <desc id="archify-diagram-description">Stateless Worker Fleet Architecture and Atomic Persistence Barrier</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5346,23 +5346,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Stateless Workers</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Threat: Agentic Retry Storms &amp; Double Spending</h3>
         </div>
         <ul>
-          <li>Uvicorn worker processes do not share memory</li>
-          <li>Local locks cannot settle races across workers</li>
+          <li><strong>Financial vs. Informational Failure:</strong> In text workflows, hallucination yields awkward output; in autonomous procurement, errors trigger duplicate billing, drained corporate lines of credit, and corrupted inventory balances</li>
+          <li><strong>The Retry Storm Hazard:</strong> Inevitable cloud network latency causes buyer agents to time out and aggressively retry identical checkout calls, landing concurrently across distinct load-balanced worker processes</li>
+          <li><strong>The Monolith Memory Fallacy:</strong> In-process locks (<code>asyncio.Lock</code>, thread mutexes) only guard a single OS process; across scaled multi-worker fleets, application memory is partitioned and cannot prevent multi-node double-spending</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Persistence Layer (Source of Truth)</h3>
+          <div class="card-dot emerald"></div>
+          <h3>Stateless Worker Fleet: Zero Distributed Locking Overhead</h3>
         </div>
         <ul>
-          <li>UNIQUE index on orders(checkout_id) guarantees idempotent order commitment</li>
-          <li>Version column detects stale reads and rejects uncoordinated mutations</li>
+          <li><strong>Horizontal Elasticity:</strong> Application workers (Uvicorn / FastAPI) remain completely stateless with no shared memory, eliminating fragile distributed lock managers (ZooKeeper, Redlock) that introduce deadlocks and latency</li>
+          <li><strong>Ingress Load Distribution:</strong> The client ingress router (Port 8000) distributes incoming mutations, purchases, and retries freely across workers without requiring inter-process synchronization</li>
+          <li><strong>Fault &amp; Node Isolation:</strong> Worker instances operate in total isolation; an individual node timeout or worker crash does not block or stall transactions processed by adjacent workers in the cluster</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>The Atomic Persistence Barrier: Database Uniqueness as the Financial Gate</h3>
+        </div>
+        <ul>
+          <li><strong>Hardware-Grade Source of Truth:</strong> The SQLite (WAL mode) / PostgreSQL persistence layer serves as the single transactional arbiter via a strict <code>UNIQUE(checkout_id)</code> constraint</li>
+          <li><strong>Deterministic Commitment:</strong> Worker 3's initial request wins the write race (<code>201 Created</code>), while Worker 4's concurrent retry hits the unique constraint barrier (<code>IntegrityError</code>)</li>
+          <li><strong>Graceful Idempotent Replay:</strong> Rather than returning a disruptive 500 error, Worker 4 catches the collision, fetches the winning order, and returns the identical receipt for transparent exactly-once semantics</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Optimistic Concurrency Control (OCC): Halting Stale Mutations</h3>
+        </div>
+        <ul>
+          <li><strong>Beyond Idempotency:</strong> Idempotency deduplicates identical requests, but cannot stop race conditions when independent actions interleave (e.g., adding emergency cart items while payment is committing)</li>
+          <li><strong>Compare-and-Swap Validation:</strong> Schema versioning enforces <code>WHERE id = ? AND version = ?</code>, allowing Worker 2 to commit fresh updates (Version 2) while instantly rejecting Worker 1's stale mutation</li>
+          <li><strong>Commercial Contract Integrity:</strong> Worker 1 receives a <code>StateConflictError</code> (HTTP 409 Conflict), preventing silent cart overwrites and price discrepancies without locking database tables</li>
         </ul>
       </div>
     </div>

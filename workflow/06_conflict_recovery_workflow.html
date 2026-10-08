@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 3.0.1">
   <meta name="archify-reader-contract" content="declared-wide-v1">
-  <title>Conflict Recovery in complete_checkout() Diagram</title>
+  <title>UCP Agent: Conflict Recovery &amp; Self-Healing Workflow</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -5381,33 +5381,48 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>Invariant Preserved</h3>
+          <h3>The UX Challenge: Turning Hard Failures into Graceful Recovery</h3>
         </div>
         <ul>
-          <li>Storage rejects stale mutations without inserting an order row</li>
-          <li>Stale checkout state is never committed to durable storage</li>
+          <li><strong>The Danger of Raw Exceptions:</strong> In naive systems, an OCC collision crashes the request, abandoning the shopper or throwing autonomous agents into blind, infinite retry loops</li>
+          <li><strong>Autonomous Commerce Resilience:</strong> Procurement agents operate unattended; APIs must provide structured pathways to inspect changes, re-synchronize, and conclude trades</li>
+          <li><strong>Preserving Business Momentum:</strong> Transforms a 409 conflict from a dead-end roadblock into an automated, self-healing state re-synchronization workflow</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot emerald"></div>
-          <h3>Source-of-Truth Refresh</h3>
+          <h3>Storage Invariant: Fail-Closed Protection</h3>
         </div>
         <ul>
-          <li>complete_checkout() intercepts StateConflictError</li>
-          <li>Re-reads persisted checkout row and returns fresh state to caller</li>
+          <li><strong>Zero State Corruption:</strong> Durable storage strictly rejects stale commits without inserting an order row; stale cart objects are never written to disk</li>
+          <li><strong>Clean Database Boundaries:</strong> Eliminates phantom orders, orphan payments, and inventory leaks that plague uncoordinated distributed systems</li>
+          <li><strong>Deterministic Error Contract:</strong> The persistence repository emits a strongly typed <code>StateConflictError</code> with unambiguous diagnostic causality</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>Caller-Side Policy</h3>
+          <h3>Source-of-Truth Refresh &amp; Diagnostic Handoff</h3>
         </div>
         <ul>
-          <li>Caller evaluates price delta and updated version</li>
-          <li>Retries with fresh expected_version or prompts user for approval</li>
+          <li><strong>Automated Re-Read:</strong> The <code>complete_checkout()</code> pipeline catches <code>StateConflictError</code> and immediately re-queries the checkouts table</li>
+          <li><strong>Enriched Diagnostic Payload:</strong> Returns the fresh persisted row state containing updated version (<code>version 2</code>), modified items, and new total</li>
+          <li><strong>Eliminating Blind Retries:</strong> Prevents client agents from retrying with identical stale parameters, avoiding wasted network bandwidth and API throttling</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Caller-Side Policy &amp; Governance Cascades</h3>
+        </div>
+        <ul>
+          <li><strong>Autonomous Policy Evaluation:</strong> Client agent compares deltas against procurement rules (e.g., auto-accepting minor price adjustments within budget tolerances)</li>
+          <li><strong>Human-in-the-Loop Escalation:</strong> If item substitutions or price changes exceed autonomous thresholds, the agent pauses to request explicit human sign-off</li>
+          <li><strong>Self-Healing Settlement:</strong> Once verified or approved, the caller re-invokes checkout with the updated <code>expected_version</code>, achieving safe, compliant closure</li>
         </ul>
       </div>
     </div>

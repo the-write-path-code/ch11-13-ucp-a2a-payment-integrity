@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 3.0.1">
   <meta name="archify-reader-contract" content="declared-wide-v1">
-  <title>Figure 13.2: OCC Persistence Validation Gate Diagram</title>
+  <title>UCP Agent: OCC Persistence Validation Gate (Figure 13.2)</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4978,9 +4978,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
            data-preset-badge-blueprint="BLUEPRINT / REV 01"
            data-preset-badge-editorial="EDITORIAL / FIELD NOTE">
         <div class="pulse-dot"></div>
-        <h1>Figure 13.2: OCC Persistence Validation Gate</h1>
+        <h1>UCP Agent: OCC Persistence Validation Gate (Figure 13.2)</h1>
       </div>
-      <p class="subtitle">Storage Boundary Inspection of Checkout Version and Total Amount</p>
+      <p class="subtitle">Durable State Boundary: Atomic Predicate Verification of Schema Version, State Lifecycle, and Cart Total</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity","revision":"54ba6c742070d2dc742a973fb86c73bb9c2a635f","shortRevision":"54ba6c7","label":"the-write-path-code/ch11-13-ucp-a2a-payment-integrity","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/tree/54ba6c742070d2dc742a973fb86c73bb9c2a635f"},"referenceCount":8,"nodes":{"node_read":[{"path":"app/services/checkout_service.py","line":86,"endLine":94,"label":"complete_checkout()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L86-L94"}],"gate_ingress":[{"path":"app/infra/store.py","line":230,"endLine":240,"label":"SELECT checkouts","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L230-L240"}],"occ_gate":[{"path":"app/infra/store.py","line":241,"endLine":248,"label":"version check","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L241-L248"}],"outcome_success":[{"path":"app/infra/store.py","line":249,"endLine":258,"label":"create_order()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L249-L258"}],"outcome_missing":[{"path":"app/infra/store.py","line":237,"endLine":240,"label":"missing row","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L237-L240"}],"outcome_conflict":[{"path":"app/domain/errors.py","line":16,"endLine":30,"label":"StateConflictError","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/domain/errors.py#L16-L30"}],"order_created":[{"path":"app/domain/models.py","line":33,"endLine":37,"label":"Order","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/domain/models.py#L33-L37"}],"storage_protected":[{"path":"app/infra/store.py","line":230,"endLine":258,"label":"SQLiteStore","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L230-L258"}]}}</script>
@@ -4989,8 +4989,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
       <svg viewBox="0 0 968 634" data-reader-fit="intrinsic-height" data-layout-contract="readable-v2" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="signal-flow" data-quality-profile="showcase">
-        <title id="archify-diagram-title">Figure 13.2: OCC Persistence Validation Gate</title>
-        <desc id="archify-diagram-description">Storage Boundary Inspection of Checkout Version and Total Amount</desc>
+        <title id="archify-diagram-title">UCP Agent: OCC Persistence Validation Gate (Figure 13.2)</title>
+        <desc id="archify-diagram-description">Durable State Boundary: Atomic Predicate Verification of Schema Version, State Lifecycle, and Cart Total</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5389,24 +5389,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Figure 13.2 Overview</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Governance Imperative: Guarding the Durable Boundary</h3>
         </div>
         <ul>
-          <li>1. Service Read captures current expected_version</li>
-          <li>2. Gate Ingress queries latest version and total from checkouts table</li>
-          <li>3. OCC Persistence Validation Gate verifies predicates before allowing order creation</li>
+          <li><strong>Zero Trust in Caller Memory:</strong> Agent workflows and LLM runtimes can desynchronize; the database storage engine must never assume caller parameters reflect fresh reality</li>
+          <li><strong>Irreversible Fulfillment Events:</strong> Creating an order row in durable storage instantly unlocks warehouse dispatch, carrier labels, and credit capture</li>
+          <li><strong>The Persistence Gatekeeper:</strong> The storage tier acts as an uncompromising gatekeeper, verifying stored state invariants before permitting row creation</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Storage Boundary Protection</h3>
+          <div class="card-dot emerald"></div>
+          <h3>Three-Point Predicate Verification</h3>
         </div>
         <ul>
-          <li>No order row is inserted when version or total amount mismatches</li>
-          <li>Stale checkout objects are never written back to durable storage</li>
+          <li><strong>Lifecycle Invariant (READY):</strong> Confirms the checkout session remains in active <code>READY</code> status, blocking stale attempts on completed or expired carts</li>
+          <li><strong>Schema Version Match:</strong> Proves <code>persisted.version == expected_version</code>, guaranteeing no concurrent mutations occurred during payment assembly</li>
+          <li><strong>Monetary Parity Check:</strong> Verifies <code>persisted.total_amount == expected_total</code>, ensuring payment authorizations match exact item valuation</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>Fail-Closed Rejection &amp; Zero Storage Mutation</h3>
+        </div>
+        <ul>
+          <li><strong>Zero Partial Commits:</strong> If any predicate fails, execution terminates immediately with zero row inserts and zero database writes</li>
+          <li><strong>Explicit Diagnostic Error:</strong> Raises <code>StateConflictError</code> detailing version drift or price discrepancy for transparent audit logging</li>
+          <li><strong>Price Exploit Prevention:</strong> Blocks malicious or buggy agents attempting to check out at stale discount totals after catalog price updates</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Enterprise Value: Mathematical Consistency &amp; Audit Integrity</h3>
+        </div>
+        <ul>
+          <li><strong>Centralized Verification:</strong> Encapsulates concurrency invariants strictly inside the persistence repository, preventing leaky business logic</li>
+          <li><strong>Deterministic Error Propagation:</strong> Surfaced as HTTP 409 Conflict to callers, allowing autonomous clients to initiate automated self-healing</li>
+          <li><strong>Financial Compliance:</strong> Satisfies enterprise audit standards requiring provably immutable transaction states and tamper-proof boundaries</li>
         </ul>
       </div>
     </div>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 3.0.1">
   <meta name="archify-reader-contract" content="declared-wide-v1">
-  <title>Retry Storm Sequence (Payment Integrity) Diagram</title>
+  <title>UCP Agent: Retry Storm Sequence &amp; Idempotent Order Reconciliation</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4978,9 +4978,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
            data-preset-badge-blueprint="BLUEPRINT / REV 01"
            data-preset-badge-editorial="EDITORIAL / FIELD NOTE">
         <div class="pulse-dot"></div>
-        <h1>Retry Storm Sequence (Payment Integrity)</h1>
+        <h1>UCP Agent: Retry Storm Sequence &amp; Idempotent Order Reconciliation</h1>
       </div>
-      <p class="subtitle">Concurrent Duplicate Delivery, DB Unique Constraint, and Loser Reconciliation</p>
+      <p class="subtitle">Atomic Idempotency Barrier: Converting Concurrent Duplicate Delivery into Exactly-Once Business Commitment</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity","revision":"54ba6c742070d2dc742a973fb86c73bb9c2a635f","shortRevision":"54ba6c7","label":"the-write-path-code/ch11-13-ucp-a2a-payment-integrity","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/tree/54ba6c742070d2dc742a973fb86c73bb9c2a635f"},"referenceCount":4,"nodes":{"client":[{"path":"app/routes/a2a_rpc.py","line":20,"endLine":40,"label":"JSON-RPC client","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/routes/a2a_rpc.py#L20-L40"}],"w1":[{"path":"app/services/checkout_service.py","line":86,"endLine":105,"label":"complete_checkout()","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L86-L105"}],"w2":[{"path":"app/services/checkout_service.py","line":107,"endLine":141,"label":"retry \u0026 reconcile","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/services/checkout_service.py#L107-L141"}],"db":[{"path":"app/infra/store.py","line":218,"endLine":258,"label":"orders table","href":"https://github.com/the-write-path-code/ch11-13-ucp-a2a-payment-integrity/blob/54ba6c742070d2dc742a973fb86c73bb9c2a635f/app/infra/store.py#L218-L258"}]}}</script>
@@ -4989,8 +4989,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
       <svg viewBox="0 0 1080 680" data-sequence-column-fit="spread" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="signal-flow" data-quality-profile="showcase">
-        <title id="archify-diagram-title">Retry Storm Sequence (Payment Integrity)</title>
-        <desc id="archify-diagram-description">Concurrent Duplicate Delivery, DB Unique Constraint, and Loser Reconciliation</desc>
+        <title id="archify-diagram-title">UCP Agent: Retry Storm Sequence &amp; Idempotent Order Reconciliation</title>
+        <desc id="archify-diagram-description">Atomic Idempotency Barrier: Converting Concurrent Duplicate Delivery into Exactly-Once Business Commitment</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5378,24 +5378,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Winning Worker 1</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Crisis: Network Drops &amp; AI Retry Floods</h3>
         </div>
         <ul>
-          <li>Worker 1 arrives first and commits Order 1001</li>
-          <li>Returns a 201 Created response to the client</li>
+          <li><strong>The Silent In-Flight Drop:</strong> Upstream network timeouts in cloud payment APIs trigger automated client agent retry storms, delivering identical payloads (<code>msg_101</code>) across multiple worker nodes</li>
+          <li><strong>Catastrophic Double-Spend:</strong> Without architectural idempotency, dual requests execute duplicate checkout transactions, draining customer credit cards and triggering fulfillment disputes</li>
+          <li><strong>Autonomous Memory Amnesia:</strong> LLM agents cannot deterministically "remember" whether an unconfirmed network attempt succeeded; safety must be enforced at the backend persistence boundary</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Losing Worker 2 &amp; Reconciliation</h3>
+          <div class="card-dot emerald"></div>
+          <h3>The Winning Path: First-Arrival Order Commitment</h3>
         </div>
         <ul>
-          <li>Worker 2 hits UNIQUE(checkout_id) constraint violation</li>
-          <li>Catches DuplicateOrderError and fetches canonical Order 1001</li>
-          <li>Returns identical receipt: exactly-once commitment preserved</li>
+          <li><strong>Race Resolution:</strong> Worker 1 arrives first and commits <code>checkout_123</code> into durable storage</li>
+          <li><strong>Canonical Creation:</strong> The database confirms atomic insertion, commits Order 1001, and returns an immediate <code>201 Created</code> response</li>
+          <li><strong>Permanent State Anchor:</strong> The newly inserted row establishes the immutable canonical ground truth for all subsequent requests matching this checkout key</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>The Losing Path: Atomic Collision &amp; Loser Reconciliation</h3>
+        </div>
+        <ul>
+          <li><strong>Hardware-Enforced Barrier:</strong> Worker 2 attempts <code>INSERT order (checkout_123)</code> and collides with the database <code>UNIQUE(checkout_id)</code> constraint</li>
+          <li><strong>Zero Error Exposure:</strong> Rather than returning a disruptive 500 error, Worker 2 traps <code>DuplicateOrderError</code> and queries <code>SELECT order WHERE checkout_id=123</code></li>
+          <li><strong>Idempotent Replay Receipt:</strong> Worker 2 retrieves canonical Order 1001 and returns the identical receipt to the caller with zero duplicate commitment</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Enterprise ROI: Exactly-Once Commitment &amp; High Availability</h3>
+        </div>
+        <ul>
+          <li><strong>Zero Financial Duplication:</strong> Guarantees exactly-once business commitment across hostile, high-latency cloud networks</li>
+          <li><strong>Non-Blocking High Concurrency:</strong> Avoids fragile distributed locking overhead by leveraging native database unique constraints</li>
+          <li><strong>Autonomous Agent Resilience:</strong> Procurement agents can retry aggressively without fear of financial corruption or duplicate billing</li>
         </ul>
       </div>
     </div>
